@@ -1,0 +1,7 @@
+{
+  "name": "asr-works",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

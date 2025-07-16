@@ -1,0 +1,32 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title> ASR-Works </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <ion-searchbar show-clear-button="always" value=""></ion-searchbar>
+
+  <ion-list [inset]="true">
+    <ion-item *ngFor="let item of items">
+      
+     
+      <ng-container *ngIf="!item.isEditing; else editMode">
+        <ion-label>{{ item.name }}</ion-label>
+      </ng-container>
+  
+      <ng-template #editMode>
+        <ion-input
+          [value]="item.name"
+          (ionBlur)="saveItem(item, $event)"
+          (keyup.enter)="saveItem(item, $event)"
+          autofocus
+        ></ion-input>
+      </ng-template>
+  
+    
+      <ion-chip color="success" (click)="editItem(item)">Edit</ion-chip>
+      <ion-chip color="danger" (click)="deleteItem(item.id)">Delete</ion-chip>
+    </ion-item>
+  </ion-list>
+  
+  </ion-content>

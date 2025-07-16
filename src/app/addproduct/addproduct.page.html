@@ -1,0 +1,73 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>ASR-Works</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" [fullscreen]="true">
+  <ion-grid class="h-100">
+    <ion-row class="ion-justify-content-center ion-align-items-center h-100">
+      <ion-col>
+        <form #form="ngForm" (ngSubmit)="saveProduct(form)">
+          <ion-card>
+            <ion-card-content>
+              <!-- Product Name -->
+              <ion-input
+                label="Product Name"
+                label-placement="floating"
+                fill="outline"
+                placeholder="Product Name"
+                required
+                name="productName"
+                [(ngModel)]="productName"
+                #productNameInput="ngModel"
+              ></ion-input>
+              <ion-text
+                color="danger"
+                *ngIf="productNameInput.invalid && productNameInput.touched"
+              >
+                <p>Product Name is required.</p>
+              </ion-text>
+
+              <!-- Product Size -->
+             
+              <ion-input
+                label="Product Size"
+                label-placement="floating"
+                fill="outline"
+                placeholder="Product Size"
+                required
+                name="productSize"
+                [(ngModel)]="productSize"
+                #productSizeInput="ngModel"
+              ></ion-input>
+              <ion-accordion-group [multiple]="true">
+                <ion-accordion value="first">
+                  <ion-item slot="header" color="light">
+                    <ion-label>First Accordion</ion-label>
+                  </ion-item>
+                  <div class="ion-padding" slot="content">First Content</div>
+                </ion-accordion>
+              </ion-accordion-group>
+              <ion-text
+                color="danger"
+                *ngIf="productSizeInput.invalid && productSizeInput.touched"
+              >
+                <p>Product Size is required.</p>
+              </ion-text>
+
+              <!-- Save Button -->
+              <ion-button
+                type="submit"
+                expand="block"
+                color="success"
+                [disabled]="form.invalid"
+                >Save</ion-button
+              >
+            </ion-card-content>
+          </ion-card>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
