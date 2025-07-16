@@ -5,68 +5,71 @@
 </ion-header>
 
 <ion-content class="ion-padding" [fullscreen]="true">
-  <ion-grid class="h-100">
+  <ion-grid class="ion-justify-content-center h-100">
     <ion-row class="ion-justify-content-center ion-align-items-center h-100">
-      <ion-col>
-        <form #form="ngForm" (ngSubmit)="saveProduct(form)">
-          <ion-card>
-            <ion-card-content>
+      <ion-col size="12" size-md="8" size-lg="6" size-xl="4">
+        <ion-card>
+          <ion-card-header class="ion-text-center">
+            <ion-card-title color="primary">Add New Product</ion-card-title>
+            <ion-card-subtitle>Enter product details</ion-card-subtitle>
+          </ion-card-header>
+
+          <ion-card-content>
+            <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
               <!-- Product Name -->
-              <ion-input
-                label="Product Name"
-                label-placement="floating"
-                fill="outline"
-                placeholder="Product Name"
-                required
-                name="productName"
-                [(ngModel)]="productName"
-                #productNameInput="ngModel"
-              ></ion-input>
-              <ion-text
-                color="danger"
-                *ngIf="productNameInput.invalid && productNameInput.touched"
-              >
-                <p>Product Name is required.</p>
-              </ion-text>
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-label position="stacked"
+                  >Product Name <ion-text color="danger">*</ion-text></ion-label
+                >
+                <ion-input
+                  formControlName="name"
+                  placeholder="Enter product name"
+                ></ion-input>
+              </ion-item>
+
+              <!-- Product Type -->
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-label position="stacked">Product Type</ion-label>
+                <ion-select
+                  formControlName="product"
+                  interface="action-sheet"
+                  placeholder="Select product type"
+                >
+                  <ion-select-option value="switch">Switch</ion-select-option>
+                  <ion-select-option value="wood">Wood Board</ion-select-option>
+                  <ion-select-option value="light">Lights</ion-select-option>
+                  <ion-select-option value="wire">Wire</ion-select-option>
+                  <ion-select-option value="sheet"
+                    >Board Sheets</ion-select-option
+                  >
+                  <ion-select-option value="trip">Trip</ion-select-option>
+                </ion-select>
+              </ion-item>
 
               <!-- Product Size -->
-             
-              <ion-input
-                label="Product Size"
-                label-placement="floating"
-                fill="outline"
-                placeholder="Product Size"
-                required
-                name="productSize"
-                [(ngModel)]="productSize"
-                #productSizeInput="ngModel"
-              ></ion-input>
-              <ion-accordion-group [multiple]="true">
-                <ion-accordion value="first">
-                  <ion-item slot="header" color="light">
-                    <ion-label>First Accordion</ion-label>
-                  </ion-item>
-                  <div class="ion-padding" slot="content">First Content</div>
-                </ion-accordion>
-              </ion-accordion-group>
-              <ion-text
-                color="danger"
-                *ngIf="productSizeInput.invalid && productSizeInput.touched"
-              >
-                <p>Product Size is required.</p>
-              </ion-text>
+              <ion-item fill="outline" class="ion-margin-bottom">
+                <ion-label position="stacked">Size</ion-label>
+                <ion-input
+                  formControlName="size"
+                  placeholder="Enter size "
+                ></ion-input>
+              </ion-item>
 
               <!-- Save Button -->
               <ion-button
-                type="submit"
                 expand="block"
-                color="success"
-                [disabled]="form.invalid"
-                >Save</ion-button
+                type="submit"
+                color="primary"
+                shape="round"
+                class="ion-margin-top"
+                [disabled]="productForm.get('name')?.invalid"
               >
-            </ion-card-content>
-          </ion-card>
-        </form>
+                
+                Save
+              </ion-button>
+            </form>
+          </ion-card-content>
+        </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>

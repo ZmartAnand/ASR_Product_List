@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent,  IonInput, IonButton, IonText, IonGrid, IonRow, IonCol, IonAccordionGroup, IonAccordion, IonItem, IonLabel } from '@ionic/angular/standalone';
+import { Component} from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent, IonInput, IonButton, IonGrid, IonRow, IonCol, IonLabel, IonSelectOption,IonSelect, IonItem, IonIcon, IonText, IonCardSubtitle, IonCardTitle, IonCardHeader } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { saveOutline } from 'ionicons/icons';
+
 
 
 
@@ -9,21 +12,20 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonCardContent,  
   selector: 'app-addproduct',
   templateUrl: 'addproduct.page.html',
   styleUrls: ['addproduct.page.scss'],
-  imports: [IonLabel, IonItem, IonAccordion, IonAccordionGroup, IonCol, IonRow, IonGrid, IonButton, IonInput, IonCardContent, IonCard, IonContent, CommonModule, FormsModule, IonText, IonToolbar, IonHeader, IonTitle]
+  imports: [IonCardHeader, IonCardTitle, IonCardSubtitle, IonText, IonItem, IonLabel, IonCol, IonRow, IonGrid, IonButton, IonCardContent, IonCard, IonContent, IonInput, CommonModule, FormsModule, IonToolbar, IonHeader, IonTitle, IonSelectOption, ReactiveFormsModule, IonSelect]
 })
 export class AddproductPage {
-  constructor() {}
-  productName: string = '';
-  productSize: string = '';
+  
+  productForm = new FormGroup({
+    name: new FormControl(''),
+    product: new FormControl(''),
+    size: new FormControl('')
+  });
 
-  saveProduct(form: any) {
-    console.log('Product Name:', this.productName);
-    console.log('Product Size:', this.productSize);
-  
-    // Clear values
-    this.productName = '';
-    this.productSize = '';
-  
-    form.resetForm();
+  saveProduct() {
+    if (this.productForm.valid) {
+      console.log(this.productForm.value);
+      this.productForm.reset(); 
+    }
   }
 }
