@@ -1,0 +1,12 @@
+specVersion: "v1"
+serviceId: "asr-works"
+location: "us-central1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "asr-works-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]
