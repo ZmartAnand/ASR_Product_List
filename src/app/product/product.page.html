@@ -1,8 +1,13 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar>
-    <ion-title> ASR-Works </ion-title>
-  </ion-toolbar>
-</ion-header>
+
+    <ion-header class="ion-no-border">
+      <ion-toolbar>
+        <ion-title>ASR-Works</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="goToNext()" color="primary" fill="outline" >Next</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    
 <ion-content class="ion-padding">
   <ion-searchbar show-clear-button="always" value=""></ion-searchbar>
   <h1>Electrical Product List</h1>
