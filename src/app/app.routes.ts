@@ -11,5 +11,9 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./tabs/tabs.routes').then((m) => m.routes),
   },
+  {
+    path: 'next-page',
+    loadComponent: () => import('./next-page/next-page.page').then( m => m.NextPagePage)
+  },
 
 ];

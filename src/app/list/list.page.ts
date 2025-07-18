@@ -7,11 +7,12 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar, IonItem, Ion
   selector: 'app-list',
   templateUrl: 'list.page.html',
   styleUrls: ['list.page.scss'],
-  imports: [IonInput, IonChip, IonLabel, IonList, IonItem, IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent,CommonModule]
+  imports: [ IonInput, IonChip, IonLabel, IonList, IonItem, IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent,CommonModule]
 })
 export class ListPage {
 
   constructor() {}
+
   // Items list with id, name, and edit state
   items = [
     { id: 1, name: 'Switch', isEditing: false },
