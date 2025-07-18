@@ -137,4 +137,8 @@ export class FirebaseService {
   collection(path: string) {
     return collection(this.firestore, path);
   }
+
+    createId(): string {
+    return doc(collection(this.firestore, 'tmp')).id;
+  }
 }
