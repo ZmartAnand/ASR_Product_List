@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar, IonItem, IonList, IonLabel, IonChip, IonInput } from '@ionic/angular/standalone';
+import { FirebaseService } from 'src/services/firebase.service';
 
 
 @Component({
@@ -10,8 +11,14 @@ import { IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar, IonItem, Ion
   imports: [ IonInput, IonChip, IonLabel, IonList, IonItem, IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent,CommonModule]
 })
 export class ListPage {
+  
 
-  constructor() {}
+  constructor(private firebaseService:FirebaseService) {}
+
+  ngOnInit() {
+    // Initialization logic if needed
+    
+  }
 
   // Items list with id, name, and edit state
   items = [

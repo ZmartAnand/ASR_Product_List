@@ -15,5 +15,8 @@ export const routes: Routes = [
     path: 'next-page',
     loadComponent: () => import('./next-page/next-page.page').then( m => m.NextPagePage)
   },
-
+  {
+    path: 'firestore',
+    loadComponent: () => import('./firestore/firestore.component').then( m => m.FirestoreComponent)
+  }
 ];

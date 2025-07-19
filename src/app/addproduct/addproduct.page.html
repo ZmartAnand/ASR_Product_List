@@ -1,74 +1,82 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>ASR-Works</ion-title>
+    <ion-title class="ion-text-center">ASR-Works</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" [fullscreen]="true">
-  <ion-grid class="ion-justify-content-center h-100">
-    <ion-row class="ion-justify-content-center ion-align-items-center h-100">
-      <ion-col size="12" size-md="8" size-lg="6" size-xl="4">
-        <ion-card>
-          <ion-card-header class="ion-text-center">
-            <ion-card-title color="primary">Add New Product</ion-card-title>
-            <ion-card-subtitle>Enter product details</ion-card-subtitle>
-          </ion-card-header>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-grid class="h-100">
+    <ion-row class="h-100 ion-justify-content-center">
+      <ion-col size="12">
+        <ion-card class="ion-padding">
 
-          <ion-card-content>
-            <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
-              <!-- Product Name -->
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-label position="stacked"
-                  >Product Name <ion-text color="danger">*</ion-text></ion-label
-                >
-                <ion-input
-                  formControlName="name"
-                  placeholder="Enter product name"
-                ></ion-input>
-              </ion-item>
+          <form [formGroup]="nameForm" (ngSubmit)="saveName()">
+            <ion-label color="dark">Product Name <ion-text color="danger">*</ion-text></ion-label>
+            <ion-item>
+              <ion-input formControlName="name" placeholder="Enter product name"></ion-input>
+            </ion-item>
+            <ion-button expand="block" type="submit" color="primary" shape="round" [disabled]="nameForm.invalid"
+              class="ion-margin-top ">
+              Save
+            </ion-button>
+          </form>
 
-              <!-- Product Type -->
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-label position="stacked">Product Type</ion-label>
-                <ion-select
-                  formControlName="product"
-                  interface="action-sheet"
-                  placeholder="Select product type"
-                >
-                  <ion-select-option value="switch">Switch</ion-select-option>
-                  <ion-select-option value="wood">Wood Board</ion-select-option>
-                  <ion-select-option value="light">Lights</ion-select-option>
-                  <ion-select-option value="wire">Wire</ion-select-option>
-                  <ion-select-option value="sheet"
-                    >Board Sheets</ion-select-option
-                  >
-                  <ion-select-option value="trip">Trip</ion-select-option>
-                </ion-select>
-              </ion-item>
+          <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()" class="ion-margin-vertical">
+            <ion-label color="dark">Product Category <ion-text color="danger">*</ion-text></ion-label>
+            <ion-item>
+              <ion-select formControlName="product" placeholder="Select product type" interface="action-sheet">
+                <ion-select-option *ngFor="let item of productOptions" [value]="item">{{ item }}</ion-select-option>
+              </ion-select>
+            </ion-item>
 
-              <!-- Product Size -->
-              <ion-item fill="outline" class="ion-margin-bottom">
-                <ion-label position="stacked">Size</ion-label>
-                <ion-input
-                  formControlName="size"
-                  placeholder="Enter size "
-                ></ion-input>
-              </ion-item>
+            <ion-item class="ion-margin-top">
+              <ion-input formControlName="categoryNote" placeholder="Enter new product category"></ion-input>
+            </ion-item>
 
-              <!-- Save Button -->
-              <ion-button
-                expand="block"
-                type="submit"
-                color="primary"
-                shape="round"
-                class="ion-margin-top"
-                [disabled]="productForm.get('name')?.invalid"
-              >
-                
-                Save
-              </ion-button>
-            </form>
-          </ion-card-content>
+            <ion-button expand="block" type="submit" color="primary" shape="round" [disabled]="categoryForm.invalid"
+              class="ion-margin-top ">
+              Save
+            </ion-button>
+          </form>
+          <form [formGroup]="sizeForm" (ngSubmit)="saveSize()" class="ion-margin-top">
+
+            <ion-label color="dark" class="ion-margin-bottom">
+              Product Size <ion-text color="danger">*</ion-text>
+            </ion-label>
+
+            <ion-accordion-group>
+              <ion-accordion value="size-select">
+                <ion-item slot="header" color="light-shade">
+                  <ion-label color="medium">Select the product size</ion-label>
+                </ion-item>
+
+                <div slot="content">
+                  <ion-searchbar formControlName="search" placeholder="Search size"></ion-searchbar>
+
+                  <div style="max-height: 180px; overflow-y: auto;">
+                    <ion-list>
+                      <ion-item *ngFor="let size of filteredSizes">
+                        <ion-label>{{ size }}</ion-label>
+                      </ion-item>
+                    </ion-list>
+                  </div>
+                </div>
+              </ion-accordion>
+            </ion-accordion-group>
+
+
+            <ion-item>
+              <ion-input formControlName="size" placeholder="Enter new product size"></ion-input>
+            </ion-item>
+
+            <ion-button expand="block" type="submit" color="primary" shape="round" [disabled]="sizeForm.invalid"
+              class="ion-margin-top">
+              Save
+            </ion-button>
+
+          </form>
+
+
         </ion-card>
       </ion-col>
     </ion-row>
