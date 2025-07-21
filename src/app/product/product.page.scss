@@ -7,3 +7,29 @@
 .ms-5{
     margin-left: 8px;
 }
+
+ion-label{
+    --padding-start: 0px;
+}
+
+.br-10{
+    border-radius: 10px;
+
+}
+
+ion-item-divider{
+     --background: var(--ion-background-color);
+}
+ion-button {
+    // min-height: 0%;
+    min-width: 0%;
+}
+
+.fs-25{
+    font-size: 25px;
+}
+
+.mt-10{
+    margin-top: 10px;
+}
+

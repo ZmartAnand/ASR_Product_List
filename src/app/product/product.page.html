@@ -8,8 +8,46 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-searchbar show-clear-button="always" value=""></ion-searchbar>
+  <ion-row class="align-items-center">
+    <ion-col size="11">
+      <ion-searchbar show-clear-button="always" placeholder="Search products..." (ionInput)="onSearchChange($event)"
+        mode="ios">
+      </ion-searchbar>
+    </ion-col>
+    <ion-col size="1" class="d-flex justify-content-center">
+      <ion-button fill="clear" class="mt-10" (click)="presentViewOptions()">
+        <ion-icon class="fs-25 " name="funnel-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-col>
+  </ion-row>
 
+
+  @if(listOpen) {
+  @for(category of uniqueCategories; track category) {
+  <ion-item-divider>
+    <label class="ion-text-capitalize"> {{ category }}</label>
+  </ion-item-divider>
+
+  <ion-list class="br-10" inset="true">
+    <ng-container *ngFor="let product of getProductsByCategory(category)">
+      <ion-item color="light">
+        <ion-label class="ion-text-capitalize">
+          {{ product.productName }}
+        </ion-label>
+
+        <ion-select slot="end" interface="popover" placeholder="Not set" multiple="true"
+          *ngIf="product?.fileSize?.length">
+          <ion-select-option *ngFor="let size of product.fileSize" [value]="size">
+            {{ size }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ng-container>
+  </ion-list>
+  }
+  }
+
+  @if(accordionOpen) {
   <ion-accordion-group multiple="true">
     @for(category of uniqueCategories; track category) {
     <ion-accordion>
@@ -29,6 +67,7 @@
     </ion-accordion>
     }
   </ion-accordion-group>
+  }
 
 
 </ion-content>
