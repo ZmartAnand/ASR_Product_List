@@ -5,4 +5,19 @@
 </ion-header>
 <ion-content class="ion-padding">
   <ion-searchbar show-clear-button="always" value=""></ion-searchbar>
-  </ion-content>
+
+  <ion-list>
+    @for(history of history; track history) {
+    @if(history?.name) {
+    <ion-item>
+      <ion-label>
+        <h2>{{ history?.name || 'Unnamed PDF' }}</h2>
+      </ion-label>
+
+      <ion-button size="small" expand="block" slot="end" color="success" (click)="previewPDF(history)">
+        Preview </ion-button>
+    </ion-item>
+    }
+    }
+  </ion-list>
+</ion-content>

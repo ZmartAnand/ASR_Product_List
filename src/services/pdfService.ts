@@ -107,7 +107,7 @@ export class PdfService {
   }
 
   // jsPDF method (recommended alternative)
-  async generateProductListPDFWithJsPDF(products: string[]): Promise<void> {
+  async generateProductListPDFWithJsPDF(products: string[], name: any): Promise<void> {
     try {
       // Load jsPDF dynamically
       const { jsPDF } = await import('jspdf');
@@ -144,7 +144,7 @@ export class PdfService {
       });
 
       // Download the PDF
-      doc.save('ASR-Works-Products.pdf');
+      doc.save(name);
     } catch (error) {
       console.error('Error generating PDF with jsPDF:', error);
       throw error;

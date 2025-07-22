@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonSearchbar, IonItemDivider, IonLabel, IonItem, IonList, IonButton, IonBackButton, IonIcon, IonFooter } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, AlertController, IonTitle, IonToolbar, IonSearchbar, IonItemDivider, IonLabel, IonItem, IonList, IonButton, IonBackButton, IonIcon, IonFooter } from '@ionic/angular/standalone';
 import { FirebaseService } from 'src/services/firebase.service';
 // import { PdfService } from 'src/services/pdf.service';
 import { Router, RouterLink } from '@angular/router';
@@ -23,7 +23,8 @@ export class NextPagePage implements OnInit {
     private pdfService: PdfService,
     private router: Router,
     private loadingController: LoadingController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private alertController: AlertController,
   ) { }
 
   ngOnInit() {
@@ -41,8 +42,7 @@ export class NextPagePage implements OnInit {
     this.loadProducts();
   }
 
-  async saveProducts() {
-
+  async saveProducts(value: any) {
     const loading = await this.loadingController.create({
       message: 'Saving products and generating PDF...'
     });
@@ -50,9 +50,10 @@ export class NextPagePage implements OnInit {
 
     try {
       await this.firestoreService.add('history', {
+        name: value,
         saveProducts: this.products
       })
-      await this.pdfService.generateProductListPDFWithJsPDF(this.products);
+      await this.pdfService.generateProductListPDFWithJsPDF(this.products, value);
       localStorage.removeItem('SelectedProducts');
       this.products = [];
       this.router.navigate(['/']);
@@ -162,5 +163,35 @@ export class NextPagePage implements OnInit {
       color: color,
     });
     await toast.present();
+  }
+
+  async getPdfNameAlert() {
+    const alert = await this.alertController.create({
+      header: 'Save PDF',
+      inputs: [
+        {
+          type: 'text',
+          placeholder: 'Enter PDF name...',
+          name: 'pdfName',
+          value: ''
+        }
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+
+        },
+        {
+          text: 'Save',
+          handler: (data) => {
+            const pdfName = data.pdfName || 'document';
+            this.saveProducts(pdfName);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 }

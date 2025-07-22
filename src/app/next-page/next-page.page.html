@@ -36,8 +36,8 @@
 
 <ion-footer class="ion-no-border">
   <ion-toolbar>
-    <ion-button size="medium" color="primary" class="ion-margin" expand="block" shape="round" (click)="saveProducts()"
-      [disabled]="!products.length">
+    <ion-button size="medium" color="primary" class="ion-margin" expand="block" shape="round"
+      (click)="getPdfNameAlert()" [disabled]="!products.length">
       Save & PDF
     </ion-button>
     <!-- <ion-button color="primary" class="ion-margin-top" shape="round" expand="block" (click)="generateSimplePDF()">
