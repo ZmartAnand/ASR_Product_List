@@ -110,7 +110,7 @@ export class PdfService {
   async generateProductListPDFWithJsPDF(products: string[], name: any): Promise<void> {
     try {
       // Load jsPDF dynamically
-      const { jsPDF } = await import('jspdf');
+      const { jsPDF }:any = await import('jspdf');
 
       const doc = new jsPDF();
 
