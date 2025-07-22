@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { IonHeader, ActionSheetController, IonToolbar, IonTitle, IonContent, IonSelect, IonSearchbar, IonSelectOption, IonAccordionGroup, IonAccordion, IonItem, IonLabel, IonChip, IonButton, IonButtons, IonText, IonItemDivider, IonList, IonRow, IonCol, IonIcon } from '@ionic/angular/standalone';
+import { IonHeader, ActionSheetController, IonToolbar, IonTitle, IonContent, IonSelect, IonSearchbar, IonSelectOption, IonAccordionGroup, IonAccordion, IonItem, IonLabel, IonChip, IonButton, IonButtons, IonText, IonItemDivider, IonList, IonRow, IonCol, IonIcon, IonCheckbox } from '@ionic/angular/standalone';
 import { where } from 'firebase/firestore';
 import { addIcons } from 'ionicons';
 import { funnel, funnelOutline } from 'ionicons/icons';
@@ -13,7 +14,7 @@ import { FirebaseService } from 'src/services/firebase.service';
   selector: 'app-product',
   templateUrl: 'product.page.html',
   styleUrls: ['product.page.scss'],
-  imports: [IonIcon, IonCol, CommonModule, IonRow, IonList, IonItemDivider, IonButtons, IonSelect, IonSelectOption, IonButton, IonChip, IonLabel, IonItem, IonAccordion, IonAccordionGroup, IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent]
+  imports: [IonCheckbox, IonIcon, FormsModule, IonCol, CommonModule, IonRow, IonList, IonItemDivider, IonButtons, IonSelect, IonSelectOption, IonButton, IonChip, IonLabel, IonItem, IonAccordion, IonAccordionGroup, IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent]
 })
 export class ProductPage {
   allProducts: any[] = [];
@@ -21,6 +22,7 @@ export class ProductPage {
   uniqueCategories: string[] = [];
   accordionOpen: boolean = false;
   listOpen: boolean = true;
+  listSelectedProducts: string[] = [];
 
   constructor(private router: Router, private firestoreService: FirebaseService, private actionSheetCtrl: ActionSheetController) {
     addIcons({ funnel, funnelOutline })
@@ -89,5 +91,45 @@ export class ProductPage {
 
   goToNext() {
     this.router.navigate(['/next-page']);
+    if (this.listSelectedProducts?.length) {
+      localStorage.setItem('SelectedProducts', JSON.stringify(this.listSelectedProducts))
+    }
+  }
+
+
+  isChecked(product: any): boolean {
+    return this.listSelectedProducts.some(item =>
+      item === product.productName || item.startsWith(product.productName + ' ')
+    );
+  }
+
+  onChange(event: any, product: any) {
+    const isChecked = event.detail.checked;
+
+    if (isChecked) {
+      if (product.fileSize?.length && product.selectedSizes?.length) {
+        product.selectedSizes.forEach((size: string) => {
+          this.listSelectedProducts.push(`${product.productName} ${size}`);
+        });
+      } else {
+        this.listSelectedProducts.push(product.productName);
+      }
+    } else {
+      this.listSelectedProducts = this.listSelectedProducts.filter(item =>
+        !(item === product.productName || item.includes(product.productName + ' '))
+      );
+    }
+  }
+
+  onSizeChange(product: any) {
+    this.listSelectedProducts = this.listSelectedProducts.filter(item =>
+      !(item === product.productName || item.startsWith(product.productName + ' '))
+    );
+
+    if (product.selectedSizes?.length) {
+      product.selectedSizes.forEach((size: string) => {
+        this.listSelectedProducts.push(`${product.productName} ${size}`);
+      });
+    }
   }
 }

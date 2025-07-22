@@ -1,9 +1,9 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-title>ASR-Works</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="goToNext()" color="primary" fill="outline">Next</ion-button>
-    </ion-buttons>
+    <ion-button slot="end" size="small" (click)="goToNext()" color="primary" [disabled]="!listSelectedProducts.length">
+      Next
+    </ion-button>
   </ion-toolbar>
 </ion-header>
 
@@ -35,15 +35,19 @@
           {{ product.productName }}
         </ion-label>
 
-        <ion-select slot="end" interface="popover" placeholder="Not set" multiple="true"
-          *ngIf="product?.fileSize?.length">
+        <ion-select slot="end" interface="popover" placeholder="Choose Size" multiple="true"
+          *ngIf="product?.fileSize?.length" [(ngModel)]="product.selectedSizes" (ionChange)="onSizeChange(product)">
           <ion-select-option *ngFor="let size of product.fileSize" [value]="size">
             {{ size }}
           </ion-select-option>
         </ion-select>
+
+        <ion-checkbox class="ion-margin-start" [checked]="isChecked(product)" (ionChange)="onChange($event, product)"
+          slot="end" [disabled]="product?.fileSize?.length && !product?.selectedSizes?.length"></ion-checkbox>
       </ion-item>
     </ng-container>
   </ion-list>
+
   }
   }
 

@@ -1,10 +1,46 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>ASR-Works</ion-title>
+    <ion-back-button slot="start"></ion-back-button>
+    <ion-title class="ion-text-center">ASR-Works</ion-title>
+    <!-- <ion-button slot="end" (click)="saveProducts()" size="small">
+      Save & PDF
+    </ion-button> -->
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
   <ion-searchbar show-clear-button="always" value=""></ion-searchbar>
-  <h1>Product List</h1>
+  @if(products.length){
+  <ion-item-divider>
+    <ion-label>List Products </ion-label>
+  </ion-item-divider>
+  }
+
+  <ion-list>
+    @for(product of products; track product){
+    <ion-item>
+      <ion-label class="ion-text-capitalize">{{product}}</ion-label>
+      <ion-button slot="end" color="danger" (click)="removeProduct(product)" size="small">
+        Delete
+      </ion-button>
+    </ion-item>
+    }
+    @empty {
+    <ion-item lines="none">
+      <ion-label class="ion-text-center">No products added yet</ion-label>
+    </ion-item>
+    <ion-button routerLink="/" size="medium" class="ion-margin" shape="round" expand="block">Go to products</ion-button>
+    }
+  </ion-list>
 </ion-content>
+
+<ion-footer class="ion-no-border">
+  <ion-toolbar>
+    <ion-button size="medium" color="primary" class="ion-margin" expand="block" shape="round" (click)="saveProducts()"
+      [disabled]="!products.length">
+      Save & PDF
+    </ion-button>
+    <!-- <ion-button color="primary" class="ion-margin-top" shape="round" expand="block" (click)="generateSimplePDF()">
+      Generate Simple PDF</ion-button> -->
+  </ion-toolbar>
+</ion-footer>
