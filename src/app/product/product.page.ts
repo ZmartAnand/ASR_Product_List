@@ -14,7 +14,7 @@ import { FirebaseService } from 'src/services/firebase.service';
   selector: 'app-product',
   templateUrl: 'product.page.html',
   styleUrls: ['product.page.scss'],
-  imports: [IonCheckbox, IonIcon, FormsModule, IonCol, CommonModule, IonRow, IonList, IonItemDivider, IonButtons, IonSelect, IonSelectOption, IonButton, IonChip, IonLabel, IonItem, IonAccordion, IonAccordionGroup, IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent]
+  imports: [IonCheckbox, IonIcon, FormsModule, IonCol, CommonModule, IonRow, IonList, IonItemDivider, IonSelect, IonSelectOption, IonButton, IonChip, IonLabel, IonItem, IonAccordion, IonAccordionGroup, IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent]
 })
 export class ProductPage {
   allProducts: any[] = [];
