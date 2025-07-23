@@ -107,44 +107,38 @@ export class PdfService {
   }
 
   // jsPDF method (recommended alternative)
-  async generateProductListPDFWithJsPDF(products: string[], name: any): Promise<void> {
+  async generateProductListPDFWithJsPDF(products: any, name: any) {
     try {
       // Load jsPDF dynamically
-      const { jsPDF }:any = await import('jspdf');
+      const { jsPDF }: any = await import('jspdf');
 
       const doc = new jsPDF();
 
-      // Add title
       doc.setFontSize(20);
       doc.setFont("helvetica", 'bold');
       doc.text('ASR-Works - Product List', 105, 20, { align: 'center' });
 
-      // Add date
       doc.setFontSize(12);
       doc.setFont("helvetica", 'normal');
       doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 35);
 
-      // Add products
       doc.setFontSize(14);
       let yPosition = 50;
+      for (const [index, p] of products.entries()) {
+        const text = `${index + 1}. ${p.name} -  ${p.quantity}`;
 
-      products.forEach((product: string, index: number) => {
-        const text = `${index + 1}. ${product}`;
-
-        // Handle long text by splitting it
         const splitText = doc.splitTextToSize(text, 170);
         doc.text(splitText, 20, yPosition);
         yPosition += splitText.length * 7;
 
-        // Add new page if content exceeds page height
         if (yPosition > 280) {
           doc.addPage();
           yPosition = 20;
         }
-      });
+      }
 
-      // Download the PDF
       doc.save(name);
+
     } catch (error) {
       console.error('Error generating PDF with jsPDF:', error);
       throw error;

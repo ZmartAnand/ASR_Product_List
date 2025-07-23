@@ -1,22 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, AlertController, IonTitle, IonToolbar, IonSearchbar, IonItemDivider, IonLabel, IonItem, IonList, IonButton, IonBackButton, IonIcon, IonFooter } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, AlertController, IonTitle, IonToolbar, IonSearchbar, IonItemDivider, IonLabel, IonItem, IonList, IonButton, IonBackButton, IonIcon, IonFooter, IonButtons } from '@ionic/angular/standalone';
 import { FirebaseService } from 'src/services/firebase.service';
 // import { PdfService } from 'src/services/pdf.service';
 import { Router, RouterLink } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { PdfService } from 'src/services/pdfService';
+import { addIcons } from 'ionicons';
+import { addOutline, removeOutline, trashOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-next-page',
   templateUrl: './next-page.page.html',
   styleUrls: ['./next-page.page.scss'],
   standalone: true,
-  imports: [IonFooter, IonButton, RouterLink, IonList, IonItem, IonLabel, IonItemDivider, IonSearchbar, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonBackButton]
+  imports: [IonButtons, IonFooter, IonIcon, IonButton, RouterLink, IonList, IonItem, IonLabel, IonItemDivider, IonSearchbar, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonBackButton]
 })
 export class NextPagePage implements OnInit {
   products: any[] = [];
+  filteredProducts: any = []
+  quantity: number = 1;
 
   constructor(
     private firestoreService: FirebaseService,
@@ -25,15 +29,35 @@ export class NextPagePage implements OnInit {
     private loadingController: LoadingController,
     private toastController: ToastController,
     private alertController: AlertController,
-  ) { }
+  ) {
+    addIcons({ removeOutline, addOutline, trashOutline })
+  }
 
-  ngOnInit() {
-    this.loadProducts();
+  async ngOnInit() {
+    await this.loadProducts();
   }
 
   loadProducts() {
     this.products = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');
-    console.log('products--', this.products);
+    this.filteredProducts = this.products
+    console.log('products--',this.filteredProducts)
+  }
+
+  increaseQuantity(product: any) {
+    product.quantity++;
+    this.updateLocalStorage();
+  }
+
+  decreaseQuantity(product: any) {
+    if (product.quantity > 1) {
+      product.quantity--;
+      this.updateLocalStorage();
+    }
+  }
+
+  updateLocalStorage() {
+    localStorage.setItem('SelectedProducts', JSON.stringify(this.products));
+    this.loadProducts();
   }
 
   removeProduct(product: any) {
@@ -194,4 +218,19 @@ export class NextPagePage implements OnInit {
 
     await alert.present();
   }
+
+
+  searchTerm(event: any) {
+    const query = event.target.value?.toLowerCase();
+
+    if (!query) {
+      this.filteredProducts = this.products;
+      return;
+    }
+
+    this.filteredProducts = this.products.filter((product: any) => {
+      return product?.name?.toLowerCase().includes(query)
+    })
+  }
+
 }

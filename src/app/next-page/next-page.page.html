@@ -1,6 +1,6 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-back-button slot="start"></ion-back-button>
+    <ion-back-button fromPage="next" slot="start"></ion-back-button>
     <ion-title class="ion-text-center">ASR-Works</ion-title>
     <!-- <ion-button slot="end" (click)="saveProducts()" size="small">
       Save & PDF
@@ -9,7 +9,7 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-searchbar show-clear-button="always" value=""></ion-searchbar>
+  <ion-searchbar (ionInput)="searchTerm($event)"></ion-searchbar>
   @if(products.length){
   <ion-item-divider>
     <ion-label>List Products </ion-label>
@@ -17,19 +17,30 @@
   }
 
   <ion-list>
-    @for(product of products; track product){
+    @for(product of filteredProducts; track product.name){
     <ion-item>
-      <ion-label class="ion-text-capitalize">{{product}}</ion-label>
-      <ion-button slot="end" color="danger" (click)="removeProduct(product)" size="small">
-        Delete
-      </ion-button>
+      <ion-label class="ion-text-capitalize">{{product.name}}</ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="medium" (click)="decreaseQuantity(product)">
+          <ion-icon name="remove-outline"></ion-icon>
+        </ion-button>
+        <ion-label class="ion-padding-horizontal">{{product.quantity}}</ion-label>
+        <ion-button color="medium" (click)="increaseQuantity(product)">
+          <ion-icon name="add-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="removeProduct(product)" size="small">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
     </ion-item>
     }
     @empty {
     <ion-item lines="none">
       <ion-label class="ion-text-center">No products added yet</ion-label>
     </ion-item>
-    <ion-button routerLink="/" size="medium" class="ion-margin" shape="round" expand="block">Go to products</ion-button>
+    <ion-button routerLink="/" size="medium" class="ion-margin" shape="round" expand="block">
+      Go to products
+    </ion-button>
     }
   </ion-list>
 </ion-content>

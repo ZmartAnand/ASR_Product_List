@@ -91,16 +91,30 @@ export class ProductPage {
 
   goToNext() {
     this.router.navigate(['/next-page']);
-    if (this.listSelectedProducts?.length) {
-      localStorage.setItem('SelectedProducts', JSON.stringify(this.listSelectedProducts))
-    }
+    this.loadNextPage()
   }
 
+  loadNextPage() {
+    const savedData = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');
+
+    const productsToStore = this.listSelectedProducts.map((product: any) => {
+      const existing = savedData.find((p: any) => p.name === product);
+      return {
+        name: product,
+        quantity: existing?.quantity || 1
+      };
+    });
+    localStorage.setItem('SelectedProducts', JSON.stringify(productsToStore));
+  }
 
   isChecked(product: any): boolean {
-    return this.listSelectedProducts.some(item =>
-      item === product.productName || item.startsWith(product.productName + ' ')
-    );
+    if (product.fileSize?.length && product.selectedSizes?.length) {
+      return product.selectedSizes.every((size: string) =>
+        this.listSelectedProducts.includes(`${product.productName} ${size}`)
+      );
+    } else {
+      return this.listSelectedProducts.includes(product.productName);
+    }
   }
 
   onChange(event: any, product: any) {
