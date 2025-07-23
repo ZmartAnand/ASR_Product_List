@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, AlertController, IonTitle, IonToolbar, IonSearchbar, IonItemDivider, IonLabel, IonItem, IonList, IonButton, IonBackButton, IonIcon, IonFooter, IonButtons } from '@ionic/angular/standalone';
 import { FirebaseService } from 'src/services/firebase.service';
 // import { PdfService } from 'src/services/pdf.service';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { PdfService } from 'src/services/pdfService';
 import { addIcons } from 'ionicons';
@@ -29,8 +29,9 @@ export class NextPagePage implements OnInit {
     private loadingController: LoadingController,
     private toastController: ToastController,
     private alertController: AlertController,
+    private route:ActivatedRoute
   ) {
-    addIcons({ removeOutline, addOutline, trashOutline })
+    addIcons({removeOutline,addOutline,trashOutline});
   }
 
   async ngOnInit() {
@@ -53,7 +54,6 @@ export class NextPagePage implements OnInit {
   loadProducts() {
     this.products = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');
     this.filteredProducts = this.products
-    console.log('products--',this.filteredProducts)
   }
 
   increaseQuantity(product: any) {
@@ -93,7 +93,7 @@ export class NextPagePage implements OnInit {
       await this.pdfService.generateProductListPDFWithJsPDF(this.products, value);
       localStorage.removeItem('SelectedProducts');
       this.products = [];
-      this.router.navigate(['/']);
+       this.router.navigate(['/parent'], { state: { fromSave: true } });
       await this.showToast('Products saved and PDF generated successfully!', 'primary');
     } catch (error) {
       console.error('Error saving products:', error);

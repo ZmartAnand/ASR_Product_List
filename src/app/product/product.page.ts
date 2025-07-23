@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { IonHeader, ActionSheetController, IonToolbar, IonTitle, IonContent, IonSelect, IonSearchbar, IonSelectOption, IonAccordionGroup, IonAccordion, IonItem, IonLabel, IonChip, IonButton, IonButtons, IonText, IonItemDivider, IonList, IonRow, IonCol, IonIcon, IonCheckbox } from '@ionic/angular/standalone';
 import { where } from 'firebase/firestore';
 import { addIcons } from 'ionicons';
@@ -16,7 +16,7 @@ import { FirebaseService } from 'src/services/firebase.service';
   styleUrls: ['product.page.scss'],
   imports: [IonCheckbox, IonIcon, FormsModule, IonCol, CommonModule, IonRow, IonList, IonItemDivider, IonSelect, IonSelectOption, IonButton, IonChip, IonLabel, IonItem, IonAccordion, IonAccordionGroup, IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent]
 })
-export class ProductPage {
+export class ProductPage implements OnInit {
   allProducts: any[] = [];
   filteredProducts: any[] = [];
   uniqueCategories: string[] = [];
@@ -24,9 +24,22 @@ export class ProductPage {
   listOpen: boolean = true;
   listSelectedProducts: string[] = [];
 
-  constructor(private router: Router, private firestoreService: FirebaseService, private actionSheetCtrl: ActionSheetController) {
+  constructor(private router: Router, private route: ActivatedRoute, private firestoreService: FirebaseService, private actionSheetCtrl: ActionSheetController) {
     addIcons({ funnel, funnelOutline })
+      this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        const state = this.router.getCurrentNavigation()?.extras?.state;
+        if (state?.['fromSave']) {
+          this.listSelectedProducts = [];
+          localStorage.removeItem('SelectedProducts');
+        } else {
+          const saved = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');
+          this.listSelectedProducts = saved.map((p: any) => p);
+        }
+      }
+    });
   }
+
 
   ngOnInit() {
     this.firestoreService.colOnQuery$('products', [
@@ -91,16 +104,15 @@ export class ProductPage {
 
   goToNext() {
     this.router.navigate(['/next-page']);
-    this.loadNextPage()
+    // this.loadNextPage()
   }
 
   loadNextPage() {
     const savedData = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');
-
     const productsToStore = this.listSelectedProducts.map((product: any) => {
       const existing = savedData.find((p: any) => p.name === product);
       return {
-        name: product,
+        productName: product,
         quantity: existing?.quantity || 1
       };
     });
@@ -113,12 +125,15 @@ export class ProductPage {
         this.listSelectedProducts.includes(`${product.productName} ${size}`)
       );
     } else {
-      return this.listSelectedProducts.includes(product.productName);
+      return this.listSelectedProducts.includes(product?.productName);
     }
   }
 
   onChange(event: any, product: any) {
-    const isChecked = event.detail.checked;
+    const isChecked = event?.detail?.checked;
+    this.listSelectedProducts = this.listSelectedProducts?.filter(item =>
+      !(item === product.productName || item?.startsWith(product.productName + ' '))
+    );
 
     if (isChecked) {
       if (product.fileSize?.length && product.selectedSizes?.length) {
@@ -129,10 +144,11 @@ export class ProductPage {
         this.listSelectedProducts.push(product.productName);
       }
     } else {
-      this.listSelectedProducts = this.listSelectedProducts.filter(item =>
-        !(item === product.productName || item.includes(product.productName + ' '))
-      );
+      if (product.fileSize?.length) {
+        product.selectedSizes = [];
+      }
     }
+    this.loadNextPage();
   }
 
   onSizeChange(product: any) {

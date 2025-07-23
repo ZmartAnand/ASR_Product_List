@@ -1,10 +1,7 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-back-button fromPage="next" slot="start"></ion-back-button>
+    <ion-back-button  slot="start"></ion-back-button>
     <ion-title class="ion-text-center">ASR-Works</ion-title>
-    <!-- <ion-button slot="end" (click)="saveProducts()" size="small">
-      Save & PDF
-    </ion-button> -->
   </ion-toolbar>
 </ion-header>
 
@@ -17,9 +14,9 @@
   }
 
   <ion-list>
-    @for(product of filteredProducts; track product.name){
+    @for(product of filteredProducts; track product.productName){
     <ion-item>
-      <ion-label class="ion-text-capitalize">{{product.name}}</ion-label>
+      <ion-label class="ion-text-capitalize">{{product.productName}}</ion-label>
       <ion-buttons slot="end">
         <ion-button color="medium" (click)="decreaseQuantity(product)">
           <ion-icon name="remove-outline"></ion-icon>
