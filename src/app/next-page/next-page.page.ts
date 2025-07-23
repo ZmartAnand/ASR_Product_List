@@ -36,6 +36,19 @@ export class NextPagePage implements OnInit {
   async ngOnInit() {
     await this.loadProducts();
   }
+    
+  searchItem(event: any) {
+    const query = event.target.value?.toLowerCase();
+    if (!query) {
+      this.filteredProducts = this.products;
+      return;
+    }
+
+    this.filteredProducts = this.products.filter((product: any) =>
+      product?.toLowerCase().includes(query.toLowerCase())
+    );
+  }
+
 
   loadProducts() {
     this.products = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');

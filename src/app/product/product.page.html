@@ -50,28 +50,54 @@
 
   }
   }
-
-  @if(accordionOpen) {
-  <ion-accordion-group multiple="true">
-    @for(category of uniqueCategories; track category) {
-    <ion-accordion>
-      <ion-item slot="header" color="light">
-        <ion-label>{{ category }}</ion-label>
-      </ion-item>
-      @for(product of getProductsByCategory(category); track product) {
-      <div class="p-10" slot="content">
-        {{ product.productName }}
-        @if(product?.fileSize?.length) {
-        @for(size of product.fileSize; track $index) {
-        <ion-chip class="ms-5">{{ size }}</ion-chip>
-        }
-        }
-      </div>
-      }
-    </ion-accordion>
-    }
-  </ion-accordion-group>
-  }
-
-
+  <ng-container *ngIf="accordionOpen">
+    <ion-accordion-group multiple="true">
+      <ion-accordion *ngFor="let category of uniqueCategories">
+        <ion-item slot="header" color="light">
+          <ion-label>{{ category }}</ion-label>
+        </ion-item>
+  
+        <ng-container *ngFor="let product of getProductsByCategory(category)">
+          <div class="p-10" slot="content">
+            <div
+              *ngIf="product?.fileSize?.length <= 3; else manyChips"
+              style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;"
+            >
+              <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <span>{{ product.productName }}</span>
+                <ng-container *ngFor="let size of product.fileSize" >
+                  <ion-chip class="ms-1">{{ size }}</ion-chip>
+                </ng-container>
+              </div>
+  
+              <ion-checkbox
+                [checked]="isChecked(product)"
+                (ionChange)="onChange($event, product)"
+                [disabled]="product?.fileSize?.length && !product?.selectedSizes?.length"
+              ></ion-checkbox>
+            </div>
+  
+            <ng-template #manyChips>
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <span>{{ product.productName }}</span>
+  
+                <ion-checkbox
+                  [checked]="isChecked(product)"
+                  (ionChange)="onChange($event, product)"
+                  [disabled]="product?.fileSize?.length && !product?.selectedSizes?.length"
+                ></ion-checkbox>
+              </div>
+  
+              <div class="mt-2 d-flex flex-wrap gap-2">
+                <ion-chip *ngFor="let size of product.fileSize" class="ms-1">
+                  {{ size }}
+                </ion-chip>
+              </div>
+            </ng-template>
+  
+          </div>
+        </ng-container>
+      </ion-accordion>
+    </ion-accordion-group>
+  </ng-container>
 </ion-content>
