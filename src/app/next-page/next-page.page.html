@@ -9,7 +9,9 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-searchbar show-clear-button="always" value=""></ion-searchbar>
+  <ion-searchbar show-clear-button="always" placeholder="Search products..." (ionInput)="searchItem($event)"
+        mode="ios">
+      </ion-searchbar>
   @if(products.length){
   <ion-item-divider>
     <ion-label>List Products </ion-label>
@@ -17,7 +19,7 @@
   }
 
   <ion-list>
-    @for(product of products; track product){
+    @for(product of filteredProducts; track product){
     <ion-item>
       <ion-label class="ion-text-capitalize">{{product}}</ion-label>
       <ion-button slot="end" color="danger" (click)="removeProduct(product)" size="small">

@@ -17,6 +17,10 @@ import { PdfService } from 'src/services/pdfService';
 })
 export class NextPagePage implements OnInit {
   products: any[] = [];
+  filteredProducts: any[] = [];
+  searchTerm: string = '';
+  selectedProducts: any;
+
 
   constructor(
     private firestoreService: FirebaseService,
@@ -28,12 +32,33 @@ export class NextPagePage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadProducts();
+    const savedProducts = localStorage.getItem('SelectedProducts');
+    if (savedProducts) {
+      this.selectedProducts = JSON.parse(savedProducts);
+      this.loadProducts();
+    }
   }
+    
+  
+
+
+  searchItem(event: any) {
+    const query = event.target.value?.toLowerCase();
+    if (!query) {
+      this.filteredProducts = this.products;
+      return;
+    }
+
+    this.filteredProducts = this.products.filter((product: any) =>
+      product?.toLowerCase().includes(query.toLowerCase())
+    );
+  }
+
 
   loadProducts() {
     this.products = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');
-    console.log('products--', this.products);
+    this.filteredProducts = this.products
+
   }
 
   removeProduct(product: any) {
