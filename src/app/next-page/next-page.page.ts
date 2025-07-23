@@ -29,15 +29,15 @@ export class NextPagePage implements OnInit {
     private loadingController: LoadingController,
     private toastController: ToastController,
     private alertController: AlertController,
-    private route:ActivatedRoute
+    private route: ActivatedRoute
   ) {
-    addIcons({removeOutline,addOutline,trashOutline});
+    addIcons({ removeOutline, addOutline, trashOutline });
   }
 
   async ngOnInit() {
     await this.loadProducts();
   }
-    
+
   searchItem(event: any) {
     const query = event.target.value?.toLowerCase();
     if (!query) {
@@ -74,9 +74,10 @@ export class NextPagePage implements OnInit {
   }
 
   removeProduct(product: any) {
-    this.products = this.products.filter((p) => p !== product);
-    localStorage.setItem('SelectedProducts', JSON.stringify(this.products));
-    this.loadProducts();
+    this.products = this.products.filter(
+      (p: any) => !(p.productName === product.productName && p.size === product.size)
+    );
+    this.updateLocalStorage();
   }
 
   async saveProducts(value: any) {
@@ -93,7 +94,7 @@ export class NextPagePage implements OnInit {
       await this.pdfService.generateProductListPDFWithJsPDF(this.products, value);
       localStorage.removeItem('SelectedProducts');
       this.products = [];
-       this.router.navigate(['/parent'], { state: { fromSave: true } });
+      this.router.navigate(['/parent'], { state: { fromSave: true } });
       await this.showToast('Products saved and PDF generated successfully!', 'primary');
     } catch (error) {
       console.error('Error saving products:', error);

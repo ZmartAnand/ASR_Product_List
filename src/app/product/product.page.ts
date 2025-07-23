@@ -2,19 +2,37 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { IonHeader, ActionSheetController, IonToolbar, IonTitle, IonContent, IonSelect, IonSearchbar, IonSelectOption, IonAccordionGroup, IonAccordion, IonItem, IonLabel, IonChip, IonButton, IonButtons, IonText, IonItemDivider, IonList, IonRow, IonCol, IonIcon, IonCheckbox } from '@ionic/angular/standalone';
+import {
+  IonHeader, ActionSheetController, IonToolbar, IonTitle, IonContent,
+  IonSelect, IonSearchbar, IonSelectOption, IonAccordionGroup, IonAccordion,
+  IonItem, IonLabel, IonChip, IonButton, IonButtons, IonText, IonItemDivider,
+  IonList, IonRow, IonCol, IonIcon, IonCheckbox
+} from '@ionic/angular/standalone';
+
 import { where } from 'firebase/firestore';
 import { addIcons } from 'ionicons';
 import { funnel, funnelOutline } from 'ionicons/icons';
 import { DocMetaStatus } from 'src/core/enums';
 import { FirebaseService } from 'src/services/firebase.service';
 
+export interface SelectedProduct {
+  productName: string;
+  size?: string;
+  quantity?: number;
+}
 
 @Component({
   selector: 'app-product',
   templateUrl: 'product.page.html',
   styleUrls: ['product.page.scss'],
-  imports: [IonCheckbox, IonIcon, FormsModule, IonCol, CommonModule, IonRow, IonList, IonItemDivider, IonSelect, IonSelectOption, IonButton, IonChip, IonLabel, IonItem, IonAccordion, IonAccordionGroup, IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent]
+  standalone: true,
+  imports: [
+    CommonModule, FormsModule,
+    IonCheckbox, IonIcon, IonCol, IonRow, IonList,
+    IonItemDivider, IonSelect, IonSelectOption, IonButton,
+    IonChip, IonLabel, IonItem, IonAccordion, IonAccordionGroup,
+    IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent
+  ]
 })
 export class ProductPage implements OnInit {
   allProducts: any[] = [];
@@ -22,11 +40,18 @@ export class ProductPage implements OnInit {
   uniqueCategories: string[] = [];
   accordionOpen: boolean = false;
   listOpen: boolean = true;
-  listSelectedProducts: string[] = [];
+  listSelectedProducts: SelectedProduct[] = [];
+  selectedsize: string[] = [];
 
-  constructor(private router: Router, private route: ActivatedRoute, private firestoreService: FirebaseService, private actionSheetCtrl: ActionSheetController) {
-    addIcons({ funnel, funnelOutline })
-      this.router.events.subscribe(event => {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private firestoreService: FirebaseService,
+    private actionSheetCtrl: ActionSheetController
+  ) {
+    addIcons({ funnel, funnelOutline });
+
+    this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const state = this.router.getCurrentNavigation()?.extras?.state;
         if (state?.['fromSave']) {
@@ -34,12 +59,19 @@ export class ProductPage implements OnInit {
           localStorage.removeItem('SelectedProducts');
         } else {
           const saved = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');
-          this.listSelectedProducts = saved.map((p: any) => p);
+          this.listSelectedProducts = saved;
+          console.log('working', this.listSelectedProducts)
+          this.listSelectedProducts.forEach(product => {
+            const selectedSizes = saved
+              .filter((p: any) => p.productName === product.productName)
+              .map((p: any) => p.size);
+
+            this.selectedsize = selectedSizes
+          });
         }
       }
     });
   }
-
 
   ngOnInit() {
     this.firestoreService.colOnQuery$('products', [
@@ -62,9 +94,7 @@ export class ProductPage implements OnInit {
   updateUniqueCategories() {
     const categorySet = new Set<string>();
     this.filteredProducts.forEach(p => {
-      if (p.category?.id) {
-        categorySet.add(p.category.id);
-      }
+      if (p.category?.id) categorySet.add(p.category.id);
     });
     this.uniqueCategories = Array.from(categorySet);
   }
@@ -103,63 +133,76 @@ export class ProductPage implements OnInit {
   }
 
   goToNext() {
+    this.loadNextPage();
     this.router.navigate(['/next-page']);
-    // this.loadNextPage()
   }
 
   loadNextPage() {
     const savedData = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');
-    const productsToStore = this.listSelectedProducts.map((product: any) => {
-      const existing = savedData.find((p: any) => p.name === product);
+
+    const merged = this.listSelectedProducts.map((p: SelectedProduct) => {
+      const existing = savedData.find((s: SelectedProduct) =>
+        s.productName === p.productName && s.size === p.size
+      );
       return {
-        productName: product,
+        productName: p.productName,
+        size: p.size,
         quantity: existing?.quantity || 1
       };
     });
-    localStorage.setItem('SelectedProducts', JSON.stringify(productsToStore));
+
+    localStorage.setItem('SelectedProducts', JSON.stringify(merged));
   }
 
   isChecked(product: any): boolean {
-    if (product.fileSize?.length && product.selectedSizes?.length) {
-      return product.selectedSizes.every((size: string) =>
-        this.listSelectedProducts.includes(`${product.productName} ${size}`)
+    if (product.fileSize?.length && this.selectedsize?.length) {
+      return this.selectedsize?.every((size: string) =>
+        this.listSelectedProducts.some(p =>
+          p.productName === product.productName && p.size === size
+        )
       );
     } else {
-      return this.listSelectedProducts.includes(product?.productName);
+      return this.listSelectedProducts.some(p =>
+        p.productName === product.productName && !p.size
+      );
     }
   }
 
   onChange(event: any, product: any) {
     const isChecked = event?.detail?.checked;
-    this.listSelectedProducts = this.listSelectedProducts?.filter(item =>
-      !(item === product.productName || item?.startsWith(product.productName + ' '))
+
+    // Remove all related entries
+    this.listSelectedProducts = this.listSelectedProducts.filter(p =>
+      !(p.productName === product.productName)
     );
 
     if (isChecked) {
-      if (product.fileSize?.length && product.selectedSizes?.length) {
-        product.selectedSizes.forEach((size: string) => {
-          this.listSelectedProducts.push(`${product.productName} ${size}`);
+      if (product.fileSize?.length && this.selectedsize?.length) {
+        this.selectedsize.forEach((size: string) => {
+          this.listSelectedProducts.push({ productName: product.productName, size });
         });
       } else {
-        this.listSelectedProducts.push(product.productName);
+        this.listSelectedProducts.push({ productName: product.productName });
       }
     } else {
-      if (product.fileSize?.length) {
-        product.selectedSizes = [];
-      }
+      if (product.fileSize?.length) this.selectedsize = [];
     }
+
     this.loadNextPage();
   }
 
   onSizeChange(product: any) {
-    this.listSelectedProducts = this.listSelectedProducts.filter(item =>
-      !(item === product.productName || item.startsWith(product.productName + ' '))
+    // Remove only the sizes for this product
+    this.listSelectedProducts = this.listSelectedProducts.filter(p =>
+      !(p.productName === product.productName)
     );
 
-    if (product.selectedSizes?.length) {
-      product.selectedSizes.forEach((size: string) => {
-        this.listSelectedProducts.push(`${product.productName} ${size}`);
+    if (this.selectedsize?.length) {
+      this.selectedsize.forEach((size: string) => {
+        this.listSelectedProducts.push({ productName: product.productName, size });
       });
     }
+
+    this.loadNextPage();
   }
 }

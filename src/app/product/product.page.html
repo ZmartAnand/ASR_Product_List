@@ -36,14 +36,14 @@
         </ion-label>
 
         <ion-select slot="end" interface="popover" placeholder="Choose Size" multiple="true"
-          *ngIf="product?.fileSize?.length" [(ngModel)]="product.selectedSizes" (ionChange)="onSizeChange(product)">
+          *ngIf="product?.fileSize?.length" [(ngModel)]="selectedsize" (ionChange)="onSizeChange(product)">
           <ion-select-option *ngFor="let size of product.fileSize" [value]="size">
             {{ size }}
           </ion-select-option>
         </ion-select>
 
         <ion-checkbox class="ion-margin-start" [checked]="isChecked(product)" (ionChange)="onChange($event, product)"
-          slot="end" [disabled]="product?.fileSize?.length && !product?.selectedSizes?.length"></ion-checkbox>
+          slot="end" [disabled]="product?.fileSize?.length && !selectedsize.length"></ion-checkbox>
       </ion-item>
     </ng-container>
   </ion-list>
@@ -56,45 +56,37 @@
         <ion-item slot="header" color="light">
           <ion-label>{{ category }}</ion-label>
         </ion-item>
-  
+
         <ng-container *ngFor="let product of getProductsByCategory(category)">
           <div class="p-10" slot="content">
-            <div
-              *ngIf="product?.fileSize?.length <= 3; else manyChips"
-              style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;"
-            >
+            <div *ngIf="product?.fileSize?.length <= 3; else manyChips"
+              style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
               <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
                 <span>{{ product.productName }}</span>
-                <ng-container *ngFor="let size of product.fileSize" >
+                <ng-container *ngFor="let size of product.fileSize">
                   <ion-chip class="ms-1">{{ size }}</ion-chip>
                 </ng-container>
               </div>
-  
-              <ion-checkbox
-                [checked]="isChecked(product)"
-                (ionChange)="onChange($event, product)"
-                [disabled]="product?.fileSize?.length && !product?.selectedSizes?.length"
-              ></ion-checkbox>
+
+              <ion-checkbox [checked]="isChecked(product)" (ionChange)="onChange($event, product)"
+                [disabled]="product?.fileSize?.length && !product?.selectedSizes?.length"></ion-checkbox>
             </div>
-  
+
             <ng-template #manyChips>
               <div style="display: flex; align-items: center; justify-content: space-between;">
                 <span>{{ product.productName }}</span>
-  
-                <ion-checkbox
-                  [checked]="isChecked(product)"
-                  (ionChange)="onChange($event, product)"
-                  [disabled]="product?.fileSize?.length && !product?.selectedSizes?.length"
-                ></ion-checkbox>
+
+                <ion-checkbox [checked]="isChecked(product)" (ionChange)="onChange($event, product)"
+                  [disabled]="product?.fileSize?.length && !product?.selectedSizes?.length"></ion-checkbox>
               </div>
-  
+
               <div class="mt-2 d-flex flex-wrap gap-2">
                 <ion-chip *ngFor="let size of product.fileSize" class="ms-1">
                   {{ size }}
                 </ion-chip>
               </div>
             </ng-template>
-  
+
           </div>
         </ng-container>
       </ion-accordion>
