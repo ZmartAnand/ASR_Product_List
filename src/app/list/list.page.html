@@ -15,7 +15,7 @@
       <ion-input [(ngModel)]="inputValues[product.productName + size]"></ion-input>
       }@else {
       <ion-label>
-        <div class="product-title">{{ product.productName }} {{size}}</div>
+        <div class="product-title ion-text-capitalize">{{ product.productName }} {{size}}</div>
       </ion-label>
       }
       <ion-buttons slot="end">
@@ -34,7 +34,7 @@
       <ion-input [(ngModel)]="inputValues[product.productName]"></ion-input>
       }@else {
       <ion-label>
-        <div class="product-title">{{ product.productName }}</div>
+        <div class="product-title ion-text-capitalize">{{ product.productName }}</div>
       </ion-label>
       }
       <ion-buttons slot="end">

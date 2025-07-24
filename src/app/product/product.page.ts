@@ -57,6 +57,7 @@ export class ProductPage implements OnInit {
         if (state?.['fromSave']) {
           this.listSelectedProducts = [];
           localStorage.removeItem('SelectedProducts');
+          this.selectedsize = {}
         } else {
           const saved = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');
           this.listSelectedProducts = saved;
@@ -64,7 +65,6 @@ export class ProductPage implements OnInit {
             const selectedSizes = saved
               .filter((p: any) => p.productName === product.productName)
               .map((p: any) => p.size);
-
             this.selectedsize[product?.productName] = selectedSizes
           });
         }
