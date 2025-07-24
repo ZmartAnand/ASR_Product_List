@@ -236,14 +236,13 @@ export class NextPagePage implements OnInit {
 
   searchTerm(event: any) {
     const query = event.target.value?.toLowerCase();
-
     if (!query) {
       this.filteredProducts = this.products;
       return;
     }
 
     this.filteredProducts = this.products.filter((product: any) => {
-      return product?.name?.toLowerCase().includes(query)
+      return product?.productName?.toLowerCase().includes(query)
     })
   }
 

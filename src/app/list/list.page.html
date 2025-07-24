@@ -7,26 +7,51 @@
   <ion-searchbar show-clear-button="always" value=""></ion-searchbar>
 
   <ion-list [inset]="true">
-    <ion-item *ngFor="let item of items">
-      
-     
-      <ng-container *ngIf="!item.isEditing; else editMode">
-        <ion-label>{{ item.name }}</ion-label>
-      </ng-container>
-  
-      <ng-template #editMode>
-        <ion-input
-          [value]="item.name"
-          (ionBlur)="saveItem(item, $event)"
-          (keyup.enter)="saveItem(item, $event)"
-          autofocus
-        ></ion-input>
-      </ng-template>
-  
-    
-      <ion-chip color="success" (click)="editItem(item)">Edit</ion-chip>
-      <ion-chip color="danger" (click)="deleteItem(item.id)">Delete</ion-chip>
+    @for (product of allProducts; track $index) {
+    @if (product.fileSize?.length) {
+    @for (size of product.fileSize; track $index) {
+    <ion-item>
+      @if(isEditing[product.productName + size]){
+      <ion-input [(ngModel)]="inputValues[product.productName + size]"></ion-input>
+      }@else {
+      <ion-label>
+        <div class="product-title">{{ product.productName }} {{size}}</div>
+      </ion-label>
+      }
+      <ion-buttons slot="end">
+        <ion-button color="primary" (click)="toggleEdit(product , size)">
+          <ion-icon name="create-outline" slot="start"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="alertDeleteProduct(product,size)" size="small">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
     </ion-item>
+    }
+    } @else {
+    <ion-item>
+      @if(isEditing[product.productName]){
+      <ion-input [(ngModel)]="inputValues[product.productName]"></ion-input>
+      }@else {
+      <ion-label>
+        <div class="product-title">{{ product.productName }}</div>
+      </ion-label>
+      }
+      <ion-buttons slot="end">
+
+        <ion-button color="primary" (click)="toggleEdit(product, '')">
+          <ion-icon name="create-outline" slot="start"></ion-icon>
+        </ion-button>
+
+        <ion-button color="danger" (click)="alertDeleteProduct(product, '')" size="small">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+    }
+    }
   </ion-list>
-  
-  </ion-content>
+
+
+
+</ion-content>
