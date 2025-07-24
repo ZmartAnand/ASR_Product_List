@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { addOutline, bag, cloudDownloadOutline, create,  eyeOutline, funnel, funnelOutline, list, pricetag, removeOutline, time, trashOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,7 @@ import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
   imports: [IonApp, IonRouterOutlet],
 })
 export class AppComponent {
+  constructor(){
+    addIcons({funnel, funnelOutline,removeOutline, addOutline, trashOutline,list,pricetag,time,create,bag,eyeOutline,cloudDownloadOutline})
+  }
 }

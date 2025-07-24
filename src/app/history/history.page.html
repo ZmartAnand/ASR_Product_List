@@ -1,23 +1,45 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title> ASR-Works </ion-title>
+    <ion-back-button slot="start"></ion-back-button>
+    <ion-title class="ion-text-center" color="primary"> ASR Works </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding">
-  <ion-searchbar show-clear-button="always" value=""></ion-searchbar>
+  <ion-searchbar (ionInput)="searchTerm($event)"></ion-searchbar>
+    <ion-item-divider>
+    <ion-label class="bold-label">History</ion-label>
+    <ion-label class="bold-label" slot="end">Total: {{ filterhistory.length }}</ion-label>
+  </ion-item-divider>
 
-  <ion-list>
-    @for(history of history; track history) {
-    @if(history?.name) {
-    <ion-item>
-      <ion-label>
+  <ion-list inset="true">
+    @for(history of filterhistory; track history) { @if(history?.name) {
+    <ion-item >
+      <ion-label  class="ion-text-capitalize" >
         <h2>{{ history?.name || 'Unnamed PDF' }}</h2>
       </ion-label>
+      <ion-button
+        size="small"
+        name="eye-outline"
+        (click)="previewPDF(history)"
+        class="ion-activatable hydrated"
+        >Preview</ion-button
+      >
 
-      <ion-button size="small" expand="block" slot="end" color="success" (click)="previewPDF(history)">
-        Preview </ion-button>
+      <ion-icon
+        name="cloud-download-outline"
+        slot="end"
+        class="ion-margin-start"
+        (click)="downloadPDF(history)"
+      ></ion-icon>
     </ion-item>
-    }
+    } }
+    <!-- Show no products found -->
+    @if (filterhistory.length === 0) {
+    <ion-item>
+      <ion-label class="ion-text-center w-full">
+        <h2>No products found</h2>
+      </ion-label>
+    </ion-item>
     }
   </ion-list>
 </ion-content>

@@ -33,3 +33,13 @@ ion-button {
     margin-top: 10px;
 }
 
+ion-button.dark-text-toggle::part(native) {
+    color: black;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    ion-button.dark-text-toggle::part(native) {
+      color: white;
+    }
+  }
+  

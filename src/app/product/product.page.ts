@@ -10,10 +10,9 @@ import {
 } from '@ionic/angular/standalone';
 
 import { where } from 'firebase/firestore';
-import { addIcons } from 'ionicons';
-import { funnel, funnelOutline } from 'ionicons/icons';
 import { DocMetaStatus } from 'src/core/enums';
 import { FirebaseService } from 'src/services/firebase.service';
+import { ProductSelectionService } from 'src/services/product-selection.service';
 
 export interface SelectedProduct {
   productName: string;
@@ -32,7 +31,7 @@ export interface SelectedProduct {
     IonItemDivider, IonSelect, IonSelectOption, IonButton,
     IonChip, IonLabel, IonItem, IonAccordion, IonAccordionGroup,
     IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent
-  ]
+]
 })
 export class ProductPage implements OnInit {
   allProducts: any[] = [];
@@ -47,9 +46,10 @@ export class ProductPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private firestoreService: FirebaseService,
-    private actionSheetCtrl: ActionSheetController
+    private actionSheetCtrl: ActionSheetController,
+    private productSelectionService: ProductSelectionService
   ) {
-    addIcons({ funnel, funnelOutline });
+    
 
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
@@ -60,7 +60,7 @@ export class ProductPage implements OnInit {
         } else {
           const saved = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');
           this.listSelectedProducts = saved;
-          console.log('working', this.listSelectedProducts)
+          // console.log('working', this.listSelectedProducts)
           this.listSelectedProducts.forEach(product => {
             const selectedSizes = saved
               .filter((p: any) => p.productName === product.productName)
@@ -152,6 +152,7 @@ export class ProductPage implements OnInit {
     });
 
     localStorage.setItem('SelectedProducts', JSON.stringify(merged));
+    this.productSelectionService.updateCount();
   }
 
   isChecked(product: any): boolean {
@@ -205,4 +206,5 @@ export class ProductPage implements OnInit {
 
     this.loadNextPage();
   }
+
 }

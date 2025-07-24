@@ -1,19 +1,21 @@
 <ion-header class="ion-no-border">
   <ion-toolbar>
     <ion-back-button slot="start"></ion-back-button>
-    <ion-title class="ion-text-center">ASR-Works</ion-title>
+    <ion-title class="ion-text-center" color="primary">ASR Works</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
   <ion-searchbar (ionInput)="searchTerm($event)"></ion-searchbar>
   @if(products.length){
-  <ion-item-divider>
-    <ion-label>List Products </ion-label>
-  </ion-item-divider>
+    
+    <ion-item-divider>
+      <ion-label class="bold-label">List Products</ion-label>
+      <ion-label class="bold-label" slot="end">Total: {{ products.length }}</ion-label>
+    </ion-item-divider>
   }
 
-  <ion-list>
+  <ion-list inset="true">
     @for(product of filteredProducts; track product.productName){
     <ion-item>
       <ion-label class="ion-text-capitalize">{{product.productName}}
@@ -52,7 +54,7 @@
       (click)="getPdfNameAlert()" [disabled]="!products.length">
       Save & PDF
     </ion-button>
-    <ion-button color="primary" class="ion-margin-top" shape="round" expand="block" (click)="generateSimplePDF()">
-      Generate Simple PDF</ion-button>
+    <!-- <ion-button color="primary" class="ion-margin-top" shape="round" expand="block" (click)="generateSimplePDF()">
+      Generate Simple PDF</ion-button> -->
   </ion-toolbar>
 </ion-footer>

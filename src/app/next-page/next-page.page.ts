@@ -1,21 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, AlertController, IonTitle, IonToolbar, IonSearchbar, IonItemDivider, IonLabel, IonItem, IonList, IonButton, IonBackButton, IonIcon, IonFooter, IonButtons } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, AlertController, IonTitle, IonToolbar, IonSearchbar, IonItemDivider, IonLabel, IonItem, IonList, IonButton, IonBackButton, IonIcon, IonFooter, IonButtons, IonNote } from '@ionic/angular/standalone';
 import { FirebaseService } from 'src/services/firebase.service';
-// import { PdfService } from 'src/services/pdf.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { PdfService } from 'src/services/pdfService';
-import { addIcons } from 'ionicons';
-import { addOutline, removeOutline, trashOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-next-page',
   templateUrl: './next-page.page.html',
   styleUrls: ['./next-page.page.scss'],
   standalone: true,
-  imports: [IonButtons, IonFooter, IonIcon, IonButton, RouterLink, IonList, IonItem, IonLabel, IonItemDivider, IonSearchbar, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonBackButton]
+  imports: [ IonButtons, IonFooter, IonIcon, IonButton, RouterLink, IonList, IonItem, IonLabel, IonItemDivider, IonSearchbar, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonBackButton]
 })
 export class NextPagePage implements OnInit {
   products: any[] = [];
@@ -31,7 +28,7 @@ export class NextPagePage implements OnInit {
     private alertController: AlertController,
     private route: ActivatedRoute
   ) {
-    addIcons({ removeOutline, addOutline, trashOutline });
+    
   }
 
   async ngOnInit() {

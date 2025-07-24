@@ -3,7 +3,7 @@
     <ion-tab-button tab="product" href="/tabs/product">
       <ion-icon  name="pricetag"></ion-icon>
       <ion-label>Product</ion-label>
-      <ion-badge color="danger">3</ion-badge>
+      <ion-badge color="danger" *ngIf="selectedCount > 0">{{ selectedCount }}</ion-badge>
     </ion-tab-button>
 
     <ion-tab-button tab="list" href="/tabs/list">
