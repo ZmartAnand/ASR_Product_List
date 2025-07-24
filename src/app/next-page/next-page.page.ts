@@ -88,10 +88,10 @@ export class NextPagePage implements OnInit {
         name: value,
         saveProducts: this.products
       })
-      await this.pdfService.generateProductListPDFWithJsPDF(this.products, value);
+      await this.pdfService.exportToPDF(this.products, value);
       localStorage.removeItem('SelectedProducts');
       this.products = [];
-      this.router.navigate(['/parent'], { state: { fromSave: true } });
+      this.router.navigate(['/'], { state: { fromSave: true } });
       await this.showToast('Products saved and PDF generated successfully!', 'primary');
     } catch (error) {
       console.error('Error saving products:', error);
@@ -233,14 +233,13 @@ export class NextPagePage implements OnInit {
 
   searchTerm(event: any) {
     const query = event.target.value?.toLowerCase();
-
     if (!query) {
       this.filteredProducts = this.products;
       return;
     }
 
     this.filteredProducts = this.products.filter((product: any) => {
-      return product?.name?.toLowerCase().includes(query)
+      return product?.productName?.toLowerCase().includes(query)
     })
   }
 
