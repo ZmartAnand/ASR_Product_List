@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 
 declare var pdfMake: any;
 
@@ -112,4 +115,51 @@ export class PdfService {
       throw error;
     }
   }
+
+  exportToPDF(products: any, name: any): void {
+    console.log('products', products)
+    console.log('name', name)
+    const doc: any = new jsPDF();
+
+    // Title - Bold and Large
+    doc.setFontSize(14);
+    doc.setFont(undefined, 'bold');
+    doc.text('ASR Electrical & Plumping', 14, 15);
+
+    // Customer Name - Medium font below title
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'normal');
+    const formattedName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+    doc.text(`Customer Name: ${formattedName}`, 14, 23);
+
+    // Contact Section - Right aligned
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('Contact Detail:', 150, 15);
+
+    doc.setFont(undefined, 'normal');
+    doc.text('Sivakumar', 150, 21);
+    doc.text('+91 8144443313', 150, 27);
+    doc.text('+91 9788753313', 150, 33);
+
+
+    autoTable(doc, {
+      startY: 40,
+      head: [['S.No', 'Product Name', 'Product Quantity']],
+      body: products.map((prod: any, i: any) => [
+        i + 1,
+        prod.productName.charAt(0).toUpperCase() + prod.productName.slice(1).toLowerCase(),
+        prod.quantity,
+      ]),
+      theme: 'grid',
+      headStyles: { fillColor: [40, 40, 40], textColor: [255, 255, 255] },
+      alternateRowStyles: { fillColor: [240, 240, 240] },
+      styles: { fontSize: 11 },
+    });
+    doc.save('ASR_Products_' + name + '.pdf');
+  }
+
+
 }
+
+//Customer name: prabu

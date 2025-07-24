@@ -48,36 +48,27 @@
           {{ product.productName }}
         </ion-label>
 
-        <ion-select
-          slot="end"
-          interface="popover"
-          placeholder="Choose Size"
-          multiple="true"
-          *ngIf="product?.fileSize?.length"
-          [(ngModel)]="selectedsize"
-          (ionChange)="onSizeChange(product)"
-        >
-          <ion-select-option
-            *ngFor="let size of product.fileSize"
-            [value]="size"
-          >
+        <ion-select slot="end" interface="popover" placeholder="Choose Size" multiple="true"
+          *ngIf="product?.fileSize?.length" [(ngModel)]="selectedsize[product.productName]"
+          (ionChange)="onSizeChange(product)">
+          <ion-select-option *ngFor="let size of product.fileSize" [value]="size">
             {{ size }}
           </ion-select-option>
         </ion-select>
 
-        <ion-checkbox
-          class="ion-margin-start"
-          [checked]="isChecked(product)"
-          (ionChange)="onChange($event, product)"
+        <ion-checkbox class="ion-margin-start" [checked]="isChecked(product)" (ionChange)="onChange($event, product)"
           slot="end"
-          [disabled]="product?.fileSize?.length && !selectedsize.length"
-        ></ion-checkbox>
+          [disabled]="product?.fileSize?.length &&  (!selectedsize[product.productName] || selectedsize[product.productName].length === 0)">
+        </ion-checkbox>
       </ion-item>
     </ng-container>
   </ion-list>
-
-  } }
-  
+  } @empty {
+  <ion-item lines="none">
+    <ion-label class="ion-text-center">No products added yet</ion-label>
+  </ion-item>
+  }
+  }
   <ng-container *ngIf="accordionOpen">
     <ion-accordion-group multiple="true">
       <ion-accordion *ngFor="let category of uniqueCategories">

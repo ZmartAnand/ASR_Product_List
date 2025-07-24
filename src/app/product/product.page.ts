@@ -40,7 +40,7 @@ export class ProductPage implements OnInit {
   accordionOpen: boolean = false;
   listOpen: boolean = true;
   listSelectedProducts: SelectedProduct[] = [];
-  selectedsize: string[] = [];
+  selectedsize: { [productName: string]: string[] } = {};
 
   constructor(
     private router: Router,
@@ -57,16 +57,15 @@ export class ProductPage implements OnInit {
         if (state?.['fromSave']) {
           this.listSelectedProducts = [];
           localStorage.removeItem('SelectedProducts');
+          this.selectedsize = {}
         } else {
           const saved = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');
           this.listSelectedProducts = saved;
-          // console.log('working', this.listSelectedProducts)
           this.listSelectedProducts.forEach(product => {
             const selectedSizes = saved
               .filter((p: any) => p.productName === product.productName)
               .map((p: any) => p.size);
-
-            this.selectedsize = selectedSizes
+            this.selectedsize[product?.productName] = selectedSizes
           });
         }
       }
@@ -156,8 +155,8 @@ export class ProductPage implements OnInit {
   }
 
   isChecked(product: any): boolean {
-    if (product.fileSize?.length && this.selectedsize?.length) {
-      return this.selectedsize?.every((size: string) =>
+    if (product.fileSize?.length && this.selectedsize[product?.productName]?.length) {
+      return this.selectedsize[product?.productName]?.every((size: string) =>
         this.listSelectedProducts.some(p =>
           p.productName === product.productName && p.size === size
         )
@@ -172,34 +171,32 @@ export class ProductPage implements OnInit {
   onChange(event: any, product: any) {
     const isChecked = event?.detail?.checked;
 
-    // Remove all related entries
     this.listSelectedProducts = this.listSelectedProducts.filter(p =>
       !(p.productName === product.productName)
     );
 
     if (isChecked) {
-      if (product.fileSize?.length && this.selectedsize?.length) {
-        this.selectedsize.forEach((size: string) => {
+      if (product.fileSize?.length && this.selectedsize[product?.productName]?.length) {
+        this.selectedsize[product?.productName].forEach((size: string) => {
           this.listSelectedProducts.push({ productName: product.productName, size });
         });
       } else {
         this.listSelectedProducts.push({ productName: product.productName });
       }
     } else {
-      if (product.fileSize?.length) this.selectedsize = [];
+      if (product.fileSize?.length) this.selectedsize[product?.productName] = [];
     }
 
     this.loadNextPage();
   }
 
   onSizeChange(product: any) {
-    // Remove only the sizes for this product
     this.listSelectedProducts = this.listSelectedProducts.filter(p =>
       !(p.productName === product.productName)
     );
 
-    if (this.selectedsize?.length) {
-      this.selectedsize.forEach((size: string) => {
+    if (this.selectedsize[product?.productName]?.length) {
+      this.selectedsize[product?.productName].forEach((size: string) => {
         this.listSelectedProducts.push({ productName: product.productName, size });
       });
     }
