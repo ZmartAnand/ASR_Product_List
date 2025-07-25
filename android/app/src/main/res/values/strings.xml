@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">asr-works</string>
-    <string name="title_activity_main">asr-works</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="app_name">ASR Works</string>
+    <string name="title_activity_main">ASR Works</string>
+    <string name="package_name">com.ASR.app</string>
+    <string name="custom_url_scheme">com.ASR.app</string>
 </resources>

@@ -1,4 +1,4 @@
-<ion-header class="ion-no-border" >
+<ion-header class="ion-no-border"  mode="ios" >
   <ion-toolbar>
     <ion-title class="ion-text-center" color="primary">ASR Works</ion-title>
     <ion-button
@@ -14,7 +14,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content class="ion-padding" mode="ios">
   <ion-row class="align-items-center">
     <ion-col size="11">
       <ion-searchbar
@@ -36,7 +36,8 @@
     </ion-col>
   </ion-row>
 
-  @if(listOpen) { @for(category of uniqueCategories; track category) {
+  @if(listOpen) { 
+  @for(category of uniqueCategories; track category) {
   <ion-item-divider>
     <label class="ion-text-capitalize"> {{ category }}</label>
   </ion-item-divider>
@@ -69,7 +70,7 @@
   </ion-item>
   }
   }
-  <ng-container *ngIf="accordionOpen">
+  <ng-container *ngIf="accordionOpen"  mode="ios">
     <ion-accordion-group multiple="true">
       <ion-accordion *ngFor="let category of uniqueCategories">
         <ion-item slot="header" color="light">

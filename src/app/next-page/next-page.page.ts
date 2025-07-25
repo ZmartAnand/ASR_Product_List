@@ -35,16 +35,16 @@ export class NextPagePage implements OnInit {
     await this.loadProducts();
   }
 
-  searchItem(event: any) {
+  searchTerm(event: any) {
     const query = event.target.value?.toLowerCase();
     if (!query) {
       this.filteredProducts = this.products;
       return;
     }
 
-    this.filteredProducts = this.products.filter((product: any) =>
-      product?.toLowerCase().includes(query.toLowerCase())
-    );
+    this.filteredProducts = this.products.filter((product: any) => {
+      return product?.productName?.toLowerCase().includes(query)
+    })
   }
 
 
@@ -231,16 +231,5 @@ export class NextPagePage implements OnInit {
   }
 
 
-  searchTerm(event: any) {
-    const query = event.target.value?.toLowerCase();
-    if (!query) {
-      this.filteredProducts = this.products;
-      return;
-    }
-
-    this.filteredProducts = this.products.filter((product: any) => {
-      return product?.productName?.toLowerCase().includes(query)
-    })
-  }
 
 }

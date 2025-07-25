@@ -1,13 +1,18 @@
-<ion-header class="ion-no-border">
+<ion-header class="ion-no-border" mode="ios">
   <ion-toolbar>
     <ion-title class="ion-text-center" color="primary"> ASR Works </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding">
-  <ion-searchbar show-clear-button="always" value=""></ion-searchbar>
+<ion-content class="ion-padding" mode="ios">
+  <ion-searchbar (ionInput)="searchTerm($event)" placeholder="Search products..."></ion-searchbar>
 
-  <ion-list [inset]="true">
-    @for (product of allProducts; track $index) {
+  <ion-item-divider>
+    <ion-label class="bold-label">All Products</ion-label>
+    <ion-label class="bold-label" slot="end">Total: {{filteredProducts.length}}</ion-label>
+  </ion-item-divider>
+
+  <ion-list [inset]="true" >
+    @for (product of filteredProducts; track $index)  {
     @if (product.fileSize?.length) {
     @for (size of product.fileSize; track $index) {
     <ion-item>
@@ -49,6 +54,13 @@
       </ion-buttons>
     </ion-item>
     }
+    }
+    @empty {
+      <ion-item lines="none">
+        <ion-label class="ion-text-center w-full">
+          No products found
+        </ion-label>
+      </ion-item>
     }
   </ion-list>
 

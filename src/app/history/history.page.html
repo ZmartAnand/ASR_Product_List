@@ -4,8 +4,8 @@
     <ion-title class="ion-text-center" color="primary"> ASR Works </ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content class="ion-padding">
-  <ion-searchbar (ionInput)="searchTerm($event)"></ion-searchbar>
+<ion-content class="ion-padding" mode="ios">
+  <ion-searchbar (ionInput)="searchTerm($event)" placeholder="Search history..."></ion-searchbar>
     <ion-item-divider>
     <ion-label class="bold-label">History</ion-label>
     <ion-label class="bold-label" slot="end">Total: {{ filterhistory.length }}</ion-label>

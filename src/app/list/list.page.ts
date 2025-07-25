@@ -5,8 +5,7 @@ import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar,
   IonItem, IonList, IonLabel, IonChip, IonInput,
-  IonButton, IonButtons, IonIcon, AlertController
-} from '@ionic/angular/standalone';
+  IonButton, IonButtons, IonIcon, AlertController, IonItemDivider } from '@ionic/angular/standalone';
 import { orderBy, where } from 'firebase/firestore';
 import { addIcons } from 'ionicons';
 import { bookmark, createOutline, trashOutline } from 'ionicons/icons';
@@ -18,7 +17,7 @@ import { FirebaseService } from 'src/services/firebase.service';
   templateUrl: 'list.page.html',
   styleUrls: ['list.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonItemDivider, 
     CommonModule, FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent,
     IonSearchbar, IonItem, IonList, IonLabel,
@@ -27,9 +26,11 @@ import { FirebaseService } from 'src/services/firebase.service';
 })
 export class ListPage {
   allProducts: any = [];
+  filteredProducts: any[] = [];
   isEditing: { [key: string]: boolean } = {};
   inputValues: { [key: string]: string } = {};
   editedOldSize: string = '';
+
 
 
   constructor(
@@ -40,12 +41,21 @@ export class ListPage {
     addIcons({ trashOutline, createOutline, bookmark });
   }
 
+  // ngOnInit() {
+  //   this.firestoreService.colOnQuery$('products', [
+  //     where('_meta.status', '==', DocMetaStatus.Live),
+  //     orderBy('_meta.createdAt', 'desc')
+  //   ]).subscribe((products: any[]) => {
+  //     this.allProducts = products;
+  //     this.filteredProducts = [...this.allProducts];
+  //   });
+  // }
   ngOnInit() {
     this.firestoreService.colOnQuery$('products', [
-      where('_meta.status', '==', DocMetaStatus.Live),
-      orderBy('_meta.createdAt', 'desc')
+      where('_meta.status', '==', DocMetaStatus.Live), orderBy('_meta.createdAt', 'desc')
     ]).subscribe((products: any[]) => {
       this.allProducts = products;
+      this.filteredProducts = [...this.allProducts]; // IMPORTANT: initialize filteredProducts here
     });
   }
 
@@ -164,6 +174,17 @@ export class ListPage {
     } else {
       this.firestoreService.delete(`products/${product._meta.id}`);
     }
+  }
+  searchTerm(event: any) {
+    const query = event.target.value?.toLowerCase() || '';
+
+    if (!query) {
+      this.filteredProducts = this.allProducts
+      return;
+    }
+    this.filteredProducts = this.allProducts.filter((product: any) => {
+      return product?.productName?.toLowerCase().includes(query)
+    })
   }
 
 }

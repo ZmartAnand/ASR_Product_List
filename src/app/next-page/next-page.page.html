@@ -1,12 +1,13 @@
-<ion-header class="ion-no-border">
+<ion-header class="ion-no-border" mode="ios">
   <ion-toolbar>
     <ion-back-button slot="start"></ion-back-button>
     <ion-title class="ion-text-center" color="primary">ASR Works</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-searchbar (ionInput)="searchTerm($event)"></ion-searchbar>
+<ion-content class="ion-padding" mode="ios">
+  <ion-searchbar (ionInput)="searchTerm($event)"
+  placeholder="Search products..."></ion-searchbar>
   @if(products.length){
     
     <ion-item-divider>
@@ -16,7 +17,7 @@
   }
 
   <ion-list inset="true">
-    @for(product of filteredProducts; track product.productName){
+    @for(product of filteredProducts; track $index){
     <ion-item>
       <ion-label class="ion-text-capitalize">{{product.productName}}
         @if(product?.size){
@@ -48,7 +49,7 @@
   </ion-list>
 </ion-content>
 
-<ion-footer class="ion-no-border">
+<ion-footer class="ion-no-border" >
   <ion-toolbar>
     <ion-button size="medium" color="primary" class="ion-margin" expand="block" shape="round"
       (click)="getPdfNameAlert()" [disabled]="!products.length">

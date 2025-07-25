@@ -116,48 +116,48 @@ export class PdfService {
     }
   }
 
-  exportToPDF(products: any, name: any): void {
-    console.log('products', products)
-    console.log('name', name)
+  exportToPDF(products: any[], name: string): void {
     const doc: any = new jsPDF();
-
-    // Title - Bold and Large
+  
+    // Title
     doc.setFontSize(14);
     doc.setFont(undefined, 'bold');
     doc.text('ASR Electrical & Plumping', 14, 15);
-
-    // Customer Name - Medium font below title
+  
+    // Customer Name
     doc.setFontSize(12);
     doc.setFont(undefined, 'normal');
     const formattedName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
     doc.text(`Customer Name: ${formattedName}`, 14, 23);
-
-    // Contact Section - Right aligned
+  
+    // Contact Details
     doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
     doc.text('Contact Detail:', 150, 15);
-
     doc.setFont(undefined, 'normal');
     doc.text('Sivakumar', 150, 21);
     doc.text('+91 8144443313', 150, 27);
     doc.text('+91 9788753313', 150, 33);
-
-
+  
+    // Table
     autoTable(doc, {
       startY: 40,
       head: [['S.No', 'Product Name', 'Product Quantity']],
-      body: products.map((prod: any, i: any) => [
+      body: products.map((prod: any, i: number) => [
         i + 1,
-        prod.productName.charAt(0).toUpperCase() + prod.productName.slice(1).toLowerCase(),
-        prod.quantity,
+        prod.size ? `${capitalize(prod.productName)} ${prod.size}` : capitalize(prod.productName),
+        prod.quantity || 1
       ]),
       theme: 'grid',
       headStyles: { fillColor: [40, 40, 40], textColor: [255, 255, 255] },
       alternateRowStyles: { fillColor: [240, 240, 240] },
       styles: { fontSize: 11 },
     });
-    doc.save('ASR_Products_' + name + '.pdf');
+  
+    doc.save(`ASR-Products-${name}.pdf`);
+  
+    function capitalize(text: string): string {
+      return text ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() : '';
+    }
   }
-
-
 }
