@@ -6,14 +6,13 @@
 </ion-header>
 
 <ion-content class="ion-padding" mode="ios">
-  <ion-searchbar (ionInput)="searchTerm($event)"
-  placeholder="Search products..."></ion-searchbar>
+  <ion-searchbar (ionInput)="searchTerm($event)" placeholder="Search products..."></ion-searchbar>
+
   @if(products.length){
-    
-    <ion-item-divider>
-      <ion-label class="bold-label">List Products</ion-label>
-      <ion-label class="bold-label" slot="end">Total: {{ products.length }}</ion-label>
-    </ion-item-divider>
+  <ion-item-divider>
+    <ion-label class="bold-label">List Products</ion-label>
+    <ion-label class="bold-label" slot="end">Total: {{ products.length }}</ion-label>
+  </ion-item-divider>
   }
 
   <ion-list inset="true">
@@ -49,7 +48,7 @@
   </ion-list>
 </ion-content>
 
-<ion-footer class="ion-no-border" >
+<ion-footer class="ion-no-border">
   <ion-toolbar>
     <ion-button size="medium" color="primary" class="ion-margin" expand="block" shape="round"
       (click)="getPdfNameAlert()" [disabled]="!products.length">

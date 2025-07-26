@@ -8,24 +8,18 @@ import { DocMetaStatus } from 'src/core/enums';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { PdfService } from 'src/services/pdfService';
-
-
-
-
 @Component({
   selector: 'app-history',
   templateUrl: './history.page.html',
   styleUrls: ['./history.page.scss'],
   standalone: true,
-  imports: [IonBackButton, IonItemDivider, IonIcon,  IonButton, IonItem, IonLabel, IonList, IonSearchbar, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonContent]
+  imports: [IonBackButton, IonItemDivider, IonIcon, IonButton, IonItem, IonLabel, IonList, IonSearchbar, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonContent]
 })
 export class HistoryPage implements OnInit {
   history: any[] = [];
   filterhistory: any[] = [];
 
-  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef, private pdfService: PdfService) { 
-   
-  }
+  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef, private pdfService: PdfService) { }
 
   ngOnInit() {
     this.firestoreService.colOnQuery$('history', [where('_meta.status', '==', DocMetaStatus.Live), orderBy('_meta.createdAt', 'desc')]).pipe(
@@ -33,14 +27,12 @@ export class HistoryPage implements OnInit {
       map((history: any) => {
         this.history = history;
         this.filterhistory = history;
-        // console.log('h---', this.filterhistory);
-
       })
     ).subscribe();
   }
 
   downloadPDF(history: any) {
-    this.pdfService.generateProductListPDFWithJsPDF(history.saveProducts, history?.name || 'ASR-Works-Products');
+    this.pdfService.exportToPDF(history.saveProducts, history?.name || 'ASR-Works-Products');
   }
 
   searchTerm(event: any) {
@@ -52,12 +44,11 @@ export class HistoryPage implements OnInit {
     }
 
     this.filterhistory = this.history.filter((history: any) => {
-      // console.log('name', history?.name)
       return history?.name?.toLowerCase().includes(query)
     })
   }
   previewPDF(item: any) {
-    this.pdfService.generateProductListPDFWithJsPDF(item.saveProducts, item.name || 'ASR-Works-Products');
+    this.pdfService.exportToPDF(item.saveProducts, item.name || 'ASR-Works-Products');
   }
 
 }
