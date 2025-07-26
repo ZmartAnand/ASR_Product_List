@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { IonList, IonItem, IonLabel, IonButton } from "@ionic/angular/standalone";
 import { FirebaseService } from 'src/services/firebase.service';
 
 @Component({
   selector: 'app-firestore',
   standalone: true,
-  imports: [IonList, IonItem, IonLabel, IonButton],
+  imports: [],
   templateUrl: './firestore.component.html',
   styleUrls: ['./firestore.component.scss'],
 })

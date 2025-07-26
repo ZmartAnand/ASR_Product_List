@@ -54,14 +54,13 @@
       </ion-buttons>
     </ion-item>
     }
-    }
-    @empty {
-      <ion-item lines="none">
-        <ion-label class="ion-text-center w-full">
-          No products found
-        </ion-label>
+    }@if(!loading && filteredProducts.length === 0){
+      <ion-item>
+        <ion-label>No products available</ion-label>
       </ion-item>
     }
+     
+    
   </ion-list>
 
 

@@ -25,12 +25,13 @@
     </ion-item>
     } }
     <!-- Show no products found -->
-    @if (filterhistory.length === 0) {
-    <ion-item>
-      <ion-label class="ion-text-center w-full">
-        <h2>No products found</h2>
-      </ion-label>
-    </ion-item>
+    @if (!isLoading && filterhistory.length === 0) {
+      <ion-item>
+        <ion-label class="ion-text-center w-full">
+          <h2>No products found</h2>
+        </ion-label>
+      </ion-item>
     }
+    
   </ion-list>
 </ion-content>

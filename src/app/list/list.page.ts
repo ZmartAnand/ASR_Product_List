@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar,
   IonItem, IonList, IonLabel, IonInput,
-  IonButton, IonButtons, IonIcon, AlertController, IonItemDivider } from '@ionic/angular/standalone';
+  IonButton, IonButtons, IonIcon, AlertController, IonItemDivider,LoadingController } from '@ionic/angular/standalone';
 import { orderBy, where } from 'firebase/firestore';
 import { DocMetaStatus } from 'src/core/enums';
 import { FirebaseService } from 'src/services/firebase.service';
@@ -27,21 +27,47 @@ export class ListPage {
   isEditing: { [key: string]: boolean } = {};
   inputValues: { [key: string]: string } = {};
   editedOldSize: string = '';
+  loading: HTMLIonLoadingElement | null = null;
 
   constructor(
     private firestoreService: FirebaseService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private loadingCtrl: LoadingController
   ) {
     
   }
 
+  async presentLoading() {
+    this.loading = await this.loadingCtrl.create({
+      message: 'Loading products...',
+      spinner: 'lines-sharp',
+    });
+    await this.loading.present();
+  }
+
+  async dismissLoading() {
+    if (this.loading) {
+      await this.loading.dismiss();
+      this.loading = null;
+    }
+  }
+
   async ngOnInit() {
+    await this.presentLoading();
     this.firestoreService.colOnQuery$('products', [
       where('_meta.status', '==', DocMetaStatus.Live), orderBy('_meta.createdAt', 'desc')
-    ]).subscribe((products: any[]) => {
-      this.allProducts = products;
-      this.filteredProducts = [...this.allProducts];
-    });
+    ]).subscribe(
+      (products: any[]) => {
+        this.allProducts = products;
+        this.filteredProducts = [...this.allProducts];
+        this.dismissLoading();
+      },
+      (err: Error) => {
+        console.error('Error loading products:', err);
+        this.dismissLoading();
+      }
+    );
+      
     // this.allProducts = await this.firestoreService.getColOnQuery('products', [where('_meta.status', '==', DocMetaStatus.Live), orderBy('_meta.createdAt', 'desc')])
     // this.filteredProducts = this.allProducts
   }

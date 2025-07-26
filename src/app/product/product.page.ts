@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
   IonHeader, ActionSheetController, IonToolbar, IonTitle, IonContent,
   IonSelect, IonSearchbar, IonSelectOption, IonAccordionGroup, IonAccordion,
@@ -31,7 +31,7 @@ export interface SelectedProduct {
     IonItemDivider, IonSelect, IonSelectOption, IonButton,
     IonChip, IonLabel, IonItem, IonAccordion, IonAccordionGroup,
     IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent
-  ]
+]
 })
 export class ProductPage implements OnInit {
   allProducts: any[] = [];
@@ -42,9 +42,11 @@ export class ProductPage implements OnInit {
   listSelectedProducts: SelectedProduct[] = [];
   selectedsize: { [productName: string]: string[] } = {};
   loading: HTMLIonLoadingElement | null = null;
+  isLoading = true;
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private firestoreService: FirebaseService,
     private actionSheetCtrl: ActionSheetController,
     private productSelectionService: ProductSelectionService,
@@ -72,6 +74,7 @@ export class ProductPage implements OnInit {
   }
 
   ngOnInit() {
+    this.isLoading = true;
     this.presentLoading();
     this.firestoreService.colOnQuery$('products', [
       where('_meta.status', '==', DocMetaStatus.Live)
@@ -79,19 +82,21 @@ export class ProductPage implements OnInit {
       this.allProducts = products;
       this.filteredProducts = [...this.allProducts];
       this.updateUniqueCategories();
+      this.isLoading = false;
       this.dismissLoading();
-    }, 
-    (error: any) => {
-      console.error('Error loading products:', error);
-      this.dismissLoading();
-    });
+    },
+      (error: any) => {
+        console.error('Error loading products:', error);
+        this.isLoading = false;
+        this.dismissLoading();
+      });
     localStorage.removeItem('SelectedProducts');
   }
+
   async presentLoading() {
     this.loading = await this.loadingCtrl.create({
       message: 'Loading products...',
-      spinner: 'crescent',
-      duration: 5000
+      spinner: 'lines-sharp',
     });
     await this.loading.present();
   }
@@ -200,9 +205,7 @@ export class ProductPage implements OnInit {
         this.listSelectedProducts.push({ productName: product.productName });
       }
     } else {
-      if (product.fileSize?.length) {
-        this.selectedsize[product?.productName] = [];
-      }
+      if (product.fileSize?.length) this.selectedsize[product?.productName] = [];
     }
     this.loadNextPage();
   }

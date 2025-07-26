@@ -8,6 +8,8 @@ import { DocMetaStatus } from 'src/core/enums';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { PdfService } from 'src/services/pdfService';
+import { LoadingController } from '@ionic/angular/standalone';
+
 @Component({
   selector: 'app-history',
   templateUrl: './history.page.html',
@@ -18,17 +20,43 @@ import { PdfService } from 'src/services/pdfService';
 export class HistoryPage implements OnInit {
   history: any[] = [];
   filterhistory: any[] = [];
+  loading: HTMLIonLoadingElement | null = null;
+  isLoading = false;
 
-  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef, private pdfService: PdfService) { }
+  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef, private pdfService: PdfService,private loadingCtrl: LoadingController) { }
 
-  ngOnInit() {
+  async presentLoading() {
+    this.loading = await this.loadingCtrl.create({
+      message: 'Loading history...',
+      spinner: 'lines-sharp',
+    });
+    await this.loading.present();
+  }
+  
+  async dismissLoading() {
+    this.isLoading = false;
+    if (this.loading) {
+      await this.loading.dismiss();
+      this.loading = null;
+    }
+  }
+  
+  async ngOnInit() {
+    this.isLoading = true;
+    await this.presentLoading();
     this.firestoreService.colOnQuery$('history', [where('_meta.status', '==', DocMetaStatus.Live), orderBy('_meta.createdAt', 'desc')]).pipe(
       takeUntilDestroyed(this.destroyRef),
       map((history: any) => {
         this.history = history;
         this.filterhistory = history;
+        this.dismissLoading();
       })
-    ).subscribe();
+    ).subscribe({
+      error: (err) => {
+        console.error('Error loading history:', err);
+        this.dismissLoading(); 
+      }
+    });
   }
 
   downloadPDF(history: any) {
