@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import {
   IonHeader, ActionSheetController, IonToolbar, IonTitle, IonContent,
   IonSelect, IonSearchbar, IonSelectOption, IonAccordionGroup, IonAccordion,
@@ -31,7 +31,7 @@ export interface SelectedProduct {
     IonItemDivider, IonSelect, IonSelectOption, IonButton,
     IonChip, IonLabel, IonItem, IonAccordion, IonAccordionGroup,
     IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent
-]
+  ]
 })
 export class ProductPage implements OnInit {
   allProducts: any[] = [];
@@ -44,13 +44,10 @@ export class ProductPage implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private firestoreService: FirebaseService,
     private actionSheetCtrl: ActionSheetController,
     private productSelectionService: ProductSelectionService
   ) {
-    
-
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const state = this.router.getCurrentNavigation()?.extras?.state;
@@ -80,6 +77,7 @@ export class ProductPage implements OnInit {
       this.filteredProducts = [...this.allProducts];
       this.updateUniqueCategories();
     });
+    localStorage.removeItem('SelectedProducts');
   }
 
   onSearchChange(event: any) {
@@ -138,7 +136,6 @@ export class ProductPage implements OnInit {
 
   loadNextPage() {
     const savedData = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');
-
     const merged = this.listSelectedProducts.map((p: SelectedProduct) => {
       const existing = savedData.find((s: SelectedProduct) =>
         s.productName === p.productName && s.size === p.size
@@ -149,7 +146,6 @@ export class ProductPage implements OnInit {
         quantity: existing?.quantity || 1
       };
     });
-
     localStorage.setItem('SelectedProducts', JSON.stringify(merged));
     this.productSelectionService.updateCount();
   }
@@ -170,11 +166,9 @@ export class ProductPage implements OnInit {
 
   onChange(event: any, product: any) {
     const isChecked = event?.detail?.checked;
-
     this.listSelectedProducts = this.listSelectedProducts.filter(p =>
       !(p.productName === product.productName)
     );
-
     if (isChecked) {
       if (product.fileSize?.length && this.selectedsize[product?.productName]?.length) {
         this.selectedsize[product?.productName].forEach((size: string) => {
@@ -184,9 +178,10 @@ export class ProductPage implements OnInit {
         this.listSelectedProducts.push({ productName: product.productName });
       }
     } else {
-      if (product.fileSize?.length) this.selectedsize[product?.productName] = [];
+      if (product.fileSize?.length) {
+        this.selectedsize[product?.productName] = [];
+      }
     }
-
     this.loadNextPage();
   }
 
@@ -194,14 +189,11 @@ export class ProductPage implements OnInit {
     this.listSelectedProducts = this.listSelectedProducts.filter(p =>
       !(p.productName === product.productName)
     );
-
     if (this.selectedsize[product?.productName]?.length) {
       this.selectedsize[product?.productName].forEach((size: string) => {
         this.listSelectedProducts.push({ productName: product.productName, size });
       });
     }
-
     this.loadNextPage();
   }
-
 }

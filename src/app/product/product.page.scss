@@ -1,49 +1,48 @@
-.p-10{
+.p-10 {
     padding-left: 10px;
     padding-bottom: 10px;
     padding-top: 10px;
 }
 
-.ms-5{
+.ms-5 {
     margin-left: 8px;
 }
 
-ion-label{
+ion-label {
     --padding-start: 0px;
 }
 
-.br-10{
+.br-10 {
     border-radius: 10px;
 
 }
 
-ion-item-divider{
-     --background: var(--ion-background-color);
+ion-item-divider {
+    --background: var(--ion-background-color);
 }
+
 ion-button {
-    // min-height: 0%;
     min-width: 0%;
 }
 
-.fs-25{
+.fs-25 {
     font-size: 25px;
 }
 
-.mt-10{
+.mt-10 {
     margin-top: 10px;
 }
 
-ion-select{
+ion-select {
     max-width: 50%;
 }
 
 ion-button.dark-text-toggle::part(native) {
     color: black;
-  }
-  
-  @media (prefers-color-scheme: dark) {
+}
+
+@media (prefers-color-scheme: dark) {
     ion-button.dark-text-toggle::part(native) {
-      color: white;
+        color: white;
     }
-  }
-  
+}

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, runInInjectionContext } from '@angular/core';
 import { Firestore, collectionData, getDoc, doc, setDoc, docData, DocumentReference, DocumentData, query, getDocs, arrayUnion, Timestamp } from '@angular/fire/firestore';
 import { addDoc, collection, deleteDoc, getCountFromServer, QueryConstraint, updateDoc } from 'firebase/firestore';
 import { Observable } from 'rxjs';
@@ -39,7 +39,15 @@ export class FirebaseService {
     const docRef = doc(this.firestore, documentPath)
     const snap = await getDoc(docRef);
     return snap.data()
+  }
 
+  async getColOnQuery(collectionPath: string, queryConstraints: QueryConstraint[]): Promise<DocumentData[]> {
+    // return runInInjectionContext(this.injector, async () => {
+    const colRef = collection(this.firestore, collectionPath);
+    const queryDocData = query(colRef, ...queryConstraints);
+    const querySnapshot = await getDocs(queryDocData);
+    return querySnapshot.docs.map(doc => doc.data());
+    // });
   }
 
 
@@ -138,7 +146,7 @@ export class FirebaseService {
     return collection(this.firestore, path);
   }
 
-    createId(): string {
+  createId(): string {
     return doc(collection(this.firestore, 'tmp')).id;
   }
 }

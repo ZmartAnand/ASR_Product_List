@@ -5,7 +5,8 @@ import { FormsModule } from '@angular/forms';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar,
   IonItem, IonList, IonLabel, IonChip, IonInput,
-  IonButton, IonButtons, IonIcon, AlertController, IonItemDivider } from '@ionic/angular/standalone';
+  IonButton, IonButtons, IonIcon, AlertController, IonItemDivider
+} from '@ionic/angular/standalone';
 import { orderBy, where } from 'firebase/firestore';
 import { addIcons } from 'ionicons';
 import { bookmark, createOutline, trashOutline } from 'ionicons/icons';
@@ -17,7 +18,7 @@ import { FirebaseService } from 'src/services/firebase.service';
   templateUrl: 'list.page.html',
   styleUrls: ['list.page.scss'],
   standalone: true,
-  imports: [IonItemDivider, 
+  imports: [IonItemDivider,
     CommonModule, FormsModule,
     IonHeader, IonToolbar, IonTitle, IonContent,
     IonSearchbar, IonItem, IonList, IonLabel,
@@ -31,37 +32,26 @@ export class ListPage {
   inputValues: { [key: string]: string } = {};
   editedOldSize: string = '';
 
-
-
   constructor(
     private firestoreService: FirebaseService,
-    private destroyRef: DestroyRef,
     private alertController: AlertController
   ) {
     addIcons({ trashOutline, createOutline, bookmark });
   }
 
-  // ngOnInit() {
-  //   this.firestoreService.colOnQuery$('products', [
-  //     where('_meta.status', '==', DocMetaStatus.Live),
-  //     orderBy('_meta.createdAt', 'desc')
-  //   ]).subscribe((products: any[]) => {
-  //     this.allProducts = products;
-  //     this.filteredProducts = [...this.allProducts];
-  //   });
-  // }
-  ngOnInit() {
+  async ngOnInit() {
     this.firestoreService.colOnQuery$('products', [
       where('_meta.status', '==', DocMetaStatus.Live), orderBy('_meta.createdAt', 'desc')
     ]).subscribe((products: any[]) => {
       this.allProducts = products;
-      this.filteredProducts = [...this.allProducts]; // IMPORTANT: initialize filteredProducts here
+      this.filteredProducts = [...this.allProducts];
     });
+    // this.allProducts = await this.firestoreService.getColOnQuery('products', [where('_meta.status', '==', DocMetaStatus.Live), orderBy('_meta.createdAt', 'desc')])
+    // this.filteredProducts = this.allProducts
   }
 
   async toggleEdit(product: any, size: any) {
     const key = product?.productName + size
-    console.log('key--', key)
     this.isEditing[key] = true;
     const inputs = [
       {

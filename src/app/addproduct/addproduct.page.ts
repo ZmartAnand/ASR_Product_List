@@ -80,9 +80,7 @@ export class AddproductPage {
 
   saveSize() {
     if (this.sizeForm.valid) {
-
       const data = this.sizeForm.value;
-
       this.firestoreService.update(`products/${this.selectedProduct?._meta?.id}`, {
         fileSize: this.firestoreService.arrayUnion([data?.size])
       })
@@ -98,7 +96,6 @@ export class AddproductPage {
     this.filteredProducts = this.allProducts.filter((product: any) => {
       return product?.productName.toLowerCase().includes(query.toLowerCase());
     })
-
   }
 
   selectProduct(product: any) {
