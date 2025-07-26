@@ -6,7 +6,7 @@ import {
   IonHeader, ActionSheetController, IonToolbar, IonTitle, IonContent,
   IonSelect, IonSearchbar, IonSelectOption, IonAccordionGroup, IonAccordion,
   IonItem, IonLabel, IonChip, IonButton, IonButtons, IonText, IonItemDivider,
-  IonList, IonRow, IonCol, IonIcon, IonCheckbox
+  IonList, IonRow, IonCol, IonIcon, IonCheckbox,LoadingController
 } from '@ionic/angular/standalone';
 
 import { where } from 'firebase/firestore';
@@ -41,13 +41,15 @@ export class ProductPage implements OnInit {
   listOpen: boolean = true;
   listSelectedProducts: SelectedProduct[] = [];
   selectedsize: { [productName: string]: string[] } = {};
+  loading: HTMLIonLoadingElement | null = null;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private firestoreService: FirebaseService,
     private actionSheetCtrl: ActionSheetController,
-    private productSelectionService: ProductSelectionService
+    private productSelectionService: ProductSelectionService,
+    private loadingCtrl: LoadingController
   ) {
     
 
@@ -73,13 +75,33 @@ export class ProductPage implements OnInit {
   }
 
   ngOnInit() {
+    this.presentLoading();
     this.firestoreService.colOnQuery$('products', [
       where('_meta.status', '==', DocMetaStatus.Live)
     ]).subscribe((products: any[]) => {
       this.allProducts = products;
       this.filteredProducts = [...this.allProducts];
       this.updateUniqueCategories();
+      this.dismissLoading();
+    }, 
+    (error: any) => {
+      console.error('Error loading products:', error);
+      this.dismissLoading();
     });
+  }
+  async presentLoading() {
+    this.loading = await this.loadingCtrl.create({
+      message: 'Loading products...',
+      spinner: 'crescent',
+      duration: 5000
+    });
+    await this.loading.present();
+  }
+  async dismissLoading() {
+    if (this.loading) {
+      await this.loading.dismiss();
+      this.loading = null;
+    }
   }
 
   onSearchChange(event: any) {
