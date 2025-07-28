@@ -244,7 +244,10 @@
 
   ion-item-divider{
     --background: var(--ion-background-color);
-}
+  }
 
+  ion-item {
+    --background: none
+  }
 
 }

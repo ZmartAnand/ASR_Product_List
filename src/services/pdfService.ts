@@ -3,7 +3,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { FileOpenerService } from './file-opener.service';
 import { File } from '@awesome-cordova-plugins/file/ngx';
-import { Platform } from '@angular/cdk/platform';
+import { Platform } from '@ionic/angular';
 
 declare var pdfMake: any;
 
@@ -73,7 +73,6 @@ export class PdfService {
     }
   }
 
-  // Generate structured product list using jsPDF
   async generateProductListPDFWithJsPDF(products: any[], filename: string): Promise<void> {
     try {
       const doc = new jsPDF();
@@ -108,7 +107,6 @@ export class PdfService {
     }
   }
 
-  // Main export with autoTable and mobile preview support
   exportToPDF(products: any[], name: string): Promise<void> {
     return new Promise(async (resolve, reject) => {
       const pdf = new jsPDF();
@@ -137,12 +135,9 @@ export class PdfService {
 
       const fileName = `ASR-Products-${name}.pdf`;
 
-      if (!this.platform.ANDROID && !this.platform.IOS) {
-        // For Web
-        pdf.save(fileName);
-        resolve();
-      } else {
-        // For Mobile
+      // ✅ Check if it's a native platform (Cordova or Capacitor)
+      if (this.platform.is('capacitor') || this.platform.is('cordova')) {
+        // For Android/iOS
         const blob = pdf.output('blob');
         try {
           await this.fileOpenerService.previewBlob(blob, fileName, 'application/pdf');
@@ -150,6 +145,10 @@ export class PdfService {
         } catch (err) {
           reject(err);
         }
+      } else {
+        // ✅ For Web
+        pdf.save(fileName);
+        resolve();
       }
     });
   }

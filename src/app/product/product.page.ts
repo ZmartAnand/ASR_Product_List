@@ -69,6 +69,7 @@ export class ProductPage implements OnInit {
             this.selectedsize[product?.productName] = selectedSizes
           });
         }
+        this.productSelectionService.updateCount()
       }
     });
   }

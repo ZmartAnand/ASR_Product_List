@@ -87,13 +87,13 @@ export class NextPagePage implements OnInit {
       await this.pdfService.exportToPDF(this.products, value);
       localStorage.removeItem('SelectedProducts');
       this.products = [];
-      this.router.navigate(['/'], { state: { fromSave: true } });
-      await this.showToast('Products saved and PDF generated successfully!', 'primary');
     } catch (error) {
       console.error('Error saving products:', error);
       await this.showToast('Error saving products or generating PDF', 'danger');
     } finally {
       await loading.dismiss();
+      this.router.navigate(['/'], { state: { fromSave: true } });
+      await this.showToast('Products saved and PDF generated successfully!', 'primary');
     }
   }
 

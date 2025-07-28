@@ -13,6 +13,6 @@ export class ProductSelectionService {
 
   private getLocalCount(): number {
     const items = JSON.parse(localStorage.getItem('SelectedProducts') || '[]');
-    return items.length;
+    return items.length ? items.length : 0;
   }
 }
