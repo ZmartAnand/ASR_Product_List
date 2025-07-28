@@ -10,11 +10,20 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from './environments/environment';
 import { FIREBASE_OPTIONS } from '@angular/fire/compat';
 
+import { File } from '@awesome-cordova-plugins/file/ngx';
+import { FileOpener } from '@awesome-cordova-plugins/file-opener/ngx';
 
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
-    provideRouter(routes, withPreloading(PreloadAllModules)), provideFirebaseApp(() => initializeApp(environment.firebaseConfig)), provideAuth(() => getAuth()), provideFirestore(() => getFirestore()),{ provide: FIREBASE_OPTIONS, useValue: environment.firebaseConfig},
+    provideRouter(routes, withPreloading(PreloadAllModules)),
+
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
+    { provide: FIREBASE_OPTIONS, useValue: environment.firebaseConfig },
+    File,
+    FileOpener
   ],
 });

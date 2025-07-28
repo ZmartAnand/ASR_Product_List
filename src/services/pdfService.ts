@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-
+import { FileOpenerService } from './file-opener.service';
+import { File } from '@awesome-cordova-plugins/file/ngx';
+import { Platform } from '@angular/cdk/platform';
 
 declare var pdfMake: any;
 
@@ -11,9 +13,13 @@ declare var pdfMake: any;
 export class PdfService {
   private pdfMakeInitialized = false;
 
-  constructor() {}
+  constructor(
+    private fileOpenerService: FileOpenerService,
+    private file: File,
+    private platform: Platform
+  ) {}
 
-  // Initialize pdfMake using CDN
+  // Load pdfMake from CDN
   private async initializePdfMakeCDN(): Promise<void> {
     if (this.pdfMakeInitialized) return;
 
@@ -35,55 +41,41 @@ export class PdfService {
     });
   }
 
-  // Basic list PDF with pdfMake
+  // Generate simple product list using pdfMake
   async generateProductListPDF(products: string[]): Promise<void> {
     try {
       await this.initializePdfMakeCDN();
 
-      const pdfContent = products.map((product: string, index: number) => {
-        return { text: `${index + 1}. ${product}`, fontSize: 12, margin: [0, 4] };
-      });
+      const pdfContent = products.map((product, index) => ({
+        text: `${index + 1}. ${product}`, fontSize: 12, margin: [0, 4]
+      }));
 
       const docDefinition = {
         content: [
           { text: 'ASR-Works - Product List', style: 'header' },
           { text: `Generated on: ${new Date().toLocaleDateString()}`, style: 'subheader' },
           { text: '\n' },
-          ...pdfContent
+          ...pdfContent,
         ],
         styles: {
-          header: {
-            fontSize: 18,
-            bold: true,
-            alignment: 'center' as const,
-            margin: [0, 0, 0, 10]
-          },
-          subheader: {
-            fontSize: 12,
-            alignment: 'center' as const,
-            margin: [0, 0, 0, 15]
-          }
+          header: { fontSize: 18, bold: true, alignment: 'center', margin: [0, 0, 0, 10] },
+          subheader: { fontSize: 12, alignment: 'center', margin: [0, 0, 0, 15] }
         },
         pageMargins: [40, 60, 40, 60]
       };
 
       const pdfMakeLib = (window as any).pdfMake;
-      if (pdfMakeLib) {
-        pdfMakeLib.createPdf(docDefinition).download('ASR-Works-Products.pdf');
-      } else {
-        throw new Error('pdfMake not initialized');
-      }
+      pdfMakeLib.createPdf(docDefinition).download('ASR-Works-Products.pdf');
+
     } catch (error) {
       console.error('Error generating PDF:', error);
       throw error;
     }
   }
 
-  // jsPDF version with Product Name and Quantity (No Size)
+  // Generate structured product list using jsPDF
   async generateProductListPDFWithJsPDF(products: any[], filename: string): Promise<void> {
     try {
-      const { jsPDF }: any = await import('jspdf');
-
       const doc = new jsPDF();
 
       doc.setFontSize(20);
@@ -116,48 +108,53 @@ export class PdfService {
     }
   }
 
-  exportToPDF(products: any[], name: string): void {
-    const doc: any = new jsPDF();
-  
-    // Title
-    doc.setFontSize(14);
-    doc.setFont(undefined, 'bold');
-    doc.text('ASR Electrical & Plumping', 14, 15);
-  
-    // Customer Name
-    doc.setFontSize(12);
-    doc.setFont(undefined, 'normal');
-    const formattedName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-    doc.text(`Customer Name: ${formattedName}`, 14, 23);
-  
-    // Contact Details
-    doc.setFontSize(12);
-    doc.setFont(undefined, 'bold');
-    doc.text('Contact Detail:', 150, 15);
-    doc.setFont(undefined, 'normal');
-    doc.text('Sivakumar', 150, 21);
-    doc.text('+91 8144443313', 150, 27);
-    doc.text('+91 9788753313', 150, 33);
-  
-    // Table
-    autoTable(doc, {
-      startY: 40,
-      head: [['S.No', 'Product Name', 'Product Quantity']],
-      body: products.map((prod: any, i: number) => [
-        i + 1,
-        prod.size ? `${capitalize(prod.productName)} ${prod.size}` : capitalize(prod.productName),
-        prod.quantity || 1
-      ]),
-      theme: 'grid',
-      headStyles: { fillColor: [40, 40, 40], textColor: [255, 255, 255] },
-      alternateRowStyles: { fillColor: [240, 240, 240] },
-      styles: { fontSize: 11 },
+  // Main export with autoTable and mobile preview support
+  exportToPDF(products: any[], name: string): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      const pdf = new jsPDF();
+
+      pdf.setFontSize(14);
+      pdf.text('ASR Electrical & Plumbing', 14, 15);
+      pdf.setFontSize(12);
+
+      const formattedName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+      pdf.text(`Customer Name: ${formattedName}`, 14, 23);
+      pdf.text('Contact Detail:', 150, 15);
+      pdf.text('Sivakumar', 150, 21);
+      pdf.text('+91 8144443313', 150, 27);
+      pdf.text('+91 9788753313', 150, 33);
+
+      autoTable(pdf, {
+        startY: 40,
+        head: [['S.No', 'Product Name', 'Product Quantity']],
+        body: products.map((prod, i) => [
+          i + 1,
+          prod.size ? `${this.capitalize(prod.productName)} ${prod.size}` : this.capitalize(prod.productName),
+          prod.quantity || 1,
+        ]),
+        theme: 'grid',
+      });
+
+      const fileName = `ASR-Products-${name}.pdf`;
+
+      if (!this.platform.ANDROID && !this.platform.IOS) {
+        // For Web
+        pdf.save(fileName);
+        resolve();
+      } else {
+        // For Mobile
+        const blob = pdf.output('blob');
+        try {
+          await this.fileOpenerService.previewBlob(blob, fileName, 'application/pdf');
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      }
     });
-  
-    doc.save(`ASR-Products-${name}.pdf`);
-  
-    function capitalize(text: string): string {
-      return text ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() : '';
-    }
+  }
+
+  private capitalize(text: string): string {
+    return text ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() : '';
   }
 }
