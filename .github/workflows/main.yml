@@ -1,9 +1,11 @@
-name: Upload Debug APK on Change
+name: Upload Debug APK on Main Branch Push
 
 on:
   push:
+    branches:
+      - main
     paths:
-      - 'android/app/build/outputs/apk/debug/app-debug.apk'  # Only trigger if APK changes
+      - 'android/app/build/outputs/apk/debug/app-debug.apk'
 
 jobs:
   upload-debug-apk:
@@ -13,10 +15,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Check if APK Exists
+      - name: Verify APK Exists
         run: |
           if [ ! -f android/app/build/outputs/apk/debug/app-debug.apk ]; then
-            echo "APK not found!"
+            echo "APK file not found!"
             exit 1
           fi
 
