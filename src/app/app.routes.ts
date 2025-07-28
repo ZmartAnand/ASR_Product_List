@@ -13,10 +13,14 @@ export const routes: Routes = [
   },
   {
     path: 'next-page',
-    loadComponent: () => import('./next-page/next-page.page').then( m => m.NextPagePage)
+    loadComponent: () => import('./next-page/next-page.page').then(m => m.NextPagePage)
   },
   {
     path: 'firestore',
-    loadComponent: () => import('./firestore/firestore.component').then( m => m.FirestoreComponent)
+    loadComponent: () => import('./firestore/firestore.component').then(m => m.FirestoreComponent)
+  },
+  {
+    path: 'history-view/:id',
+    loadComponent: () => import('./history-view/history-view.component').then(m => m.HistoryViewComponent)
   }
 ];

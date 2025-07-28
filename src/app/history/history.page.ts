@@ -9,6 +9,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { PdfService } from 'src/services/pdfService';
 import { LoadingController } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-history',
@@ -23,7 +24,7 @@ export class HistoryPage implements OnInit {
   loading: HTMLIonLoadingElement | null = null;
   isLoading = false;
 
-  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef, private pdfService: PdfService,private loadingCtrl: LoadingController) { }
+  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef, private pdfService: PdfService, private loadingCtrl: LoadingController, private router: Router) { }
 
   async presentLoading() {
     this.loading = await this.loadingCtrl.create({
@@ -32,7 +33,7 @@ export class HistoryPage implements OnInit {
     });
     await this.loading.present();
   }
-  
+
   async dismissLoading() {
     this.isLoading = false;
     if (this.loading) {
@@ -40,7 +41,7 @@ export class HistoryPage implements OnInit {
       this.loading = null;
     }
   }
-  
+
   async ngOnInit() {
     this.isLoading = true;
     await this.presentLoading();
@@ -54,7 +55,7 @@ export class HistoryPage implements OnInit {
     ).subscribe({
       error: (err) => {
         console.error('Error loading history:', err);
-        this.dismissLoading(); 
+        this.dismissLoading();
       }
     });
   }
@@ -75,8 +76,7 @@ export class HistoryPage implements OnInit {
       return history?.name?.toLowerCase().includes(query)
     })
   }
-  previewPDF(item: any) {
-    this.pdfService.exportToPDF(item.saveProducts, item.name || 'ASR-Works-Products');
+  previewPDF(history: any) {
+    this.router.navigate([`history-view/${history._meta?.id}`])
   }
-
 }

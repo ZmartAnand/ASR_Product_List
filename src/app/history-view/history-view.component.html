@@ -1,0 +1,28 @@
+<ion-header class="ion-no-border" mode="ios">
+  <ion-toolbar>
+    <ion-back-button slot="start"></ion-back-button>
+    <ion-title class="ion-text-center" color="primary">ASR Works</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" mode="ios">
+  <ion-searchbar (ionInput)="searchTerm($event)" placeholder="Search products..."></ion-searchbar>
+
+  <ion-item-divider>
+    <ion-label class="bold-label">{{history?.name}}</ion-label>
+    <ion-label class="bold-label" slot="end">Total: {{ history?.saveProducts?.length }}</ion-label>
+  </ion-item-divider>
+
+  <ion-list inset="true">
+    @for(history of filteredHistory?.saveProducts; track $index){
+    <ion-item>
+      <ion-label class="ion-text-capitalize">{{history.productName}}
+        @if(history?.size){
+        <span>{{history?.size}}</span>
+        }
+      </ion-label>
+      <p slot="end">Qty: <span>{{history?.quantity}}</span></p>
+    </ion-item>
+    }
+  </ion-list>
+</ion-content>

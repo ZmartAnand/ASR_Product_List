@@ -6,7 +6,7 @@ import {
   IonHeader, ActionSheetController, IonToolbar, IonTitle, IonContent,
   IonSelect, IonSearchbar, IonSelectOption, IonAccordionGroup, IonAccordion,
   IonItem, IonLabel, IonChip, IonButton, IonButtons, IonText, IonItemDivider,
-  IonList, IonRow, IonCol, IonIcon, IonCheckbox,LoadingController
+  IonList, IonRow, IonCol, IonIcon, IonCheckbox, LoadingController
 } from '@ionic/angular/standalone';
 
 import { where } from 'firebase/firestore';
@@ -31,7 +31,7 @@ export interface SelectedProduct {
     IonItemDivider, IonSelect, IonSelectOption, IonButton,
     IonChip, IonLabel, IonItem, IonAccordion, IonAccordionGroup,
     IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent
-]
+  ]
 })
 export class ProductPage implements OnInit {
   allProducts: any[] = [];
