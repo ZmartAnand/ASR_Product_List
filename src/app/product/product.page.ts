@@ -6,8 +6,7 @@ import {
   IonHeader, ActionSheetController, IonToolbar, IonTitle, IonContent,
   IonSelect, IonSearchbar, IonSelectOption, IonAccordionGroup, IonAccordion,
   IonItem, IonLabel, IonChip, IonButton, IonButtons, IonText, IonItemDivider,
-  IonList, IonRow, IonCol, IonIcon, IonCheckbox, LoadingController
-} from '@ionic/angular/standalone';
+  IonList, IonRow, IonCol, IonIcon, IonCheckbox, LoadingController, IonGrid, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from '@ionic/angular/standalone';
 
 import { where } from 'firebase/firestore';
 import { Base } from 'src/core/base';
@@ -27,7 +26,7 @@ export interface SelectedProduct {
   templateUrl: 'product.page.html',
   styleUrls: ['product.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonGrid, 
     CommonModule, FormsModule,
     IonCheckbox, IonIcon, IonCol, IonRow, IonList,
     IonItemDivider, IonSelect, IonSelectOption, IonButton,
