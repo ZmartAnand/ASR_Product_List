@@ -10,6 +10,7 @@ import { map } from 'rxjs';
 import { PdfService } from 'src/services/pdfService';
 import { LoadingController } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
+import { LoadingService } from 'src/services/loading.service';
 
 @Component({
   selector: 'app-history',
@@ -19,45 +20,25 @@ import { Router } from '@angular/router';
   imports: [IonBackButton, IonItemDivider, IonIcon, IonButton, IonItem, IonLabel, IonList, IonSearchbar, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonContent]
 })
 export class HistoryPage implements OnInit {
-  history: any[] = [];
-  filterhistory: any[] = [];
-  loading: HTMLIonLoadingElement | null = null;
+  histories: any[] = [];
+  filterHistories: any[] = [];
   isLoading = false;
 
-  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef, private pdfService: PdfService, private loadingCtrl: LoadingController, private router: Router) { }
+  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef, private pdfService: PdfService, private loadingService: LoadingService, private router: Router) { }
 
-  async presentLoading() {
-    this.loading = await this.loadingCtrl.create({
-      message: 'Loading history...',
-      spinner: 'lines-sharp',
-    });
-    await this.loading.present();
-  }
-
-  async dismissLoading() {
-    this.isLoading = false;
-    if (this.loading) {
-      await this.loading.dismiss();
-      this.loading = null;
-    }
-  }
 
   async ngOnInit() {
+    await this.loadingService.show()
     this.isLoading = true;
-    await this.presentLoading();
     this.firestoreService.colOnQuery$('history', [where('_meta.status', '==', DocMetaStatus.Live), orderBy('_meta.createdAt', 'desc')]).pipe(
       takeUntilDestroyed(this.destroyRef),
-      map((history: any) => {
-        this.history = history;
-        this.filterhistory = history;
-        this.dismissLoading();
+      map((histories: any) => {
+        this.histories = histories;
+        this.filterHistories = this.histories;
+        this.loadingService.dismissAll()
+        this.isLoading = false;
       })
-    ).subscribe({
-      error: (err) => {
-        console.error('Error loading history:', err);
-        this.dismissLoading();
-      }
-    });
+    ).subscribe();
   }
 
   downloadPDF(history: any) {
@@ -66,17 +47,16 @@ export class HistoryPage implements OnInit {
 
   searchTerm(event: any) {
     const query = event.target.value?.toLowerCase();
-
     if (!query) {
-      this.filterhistory = this.history;
+      this.filterHistories = this.histories;
       return;
     }
-
-    this.filterhistory = this.history.filter((history: any) => {
+    this.filterHistories = this.histories.filter((history: any) => {
       return history?.name?.toLowerCase().includes(query)
     })
   }
+
   previewPDF(history: any) {
-    this.router.navigate([`history-view/${history._meta?.id}`])
+    this.router.navigate([`view-history/${history._meta?.id}`])
   }
 }

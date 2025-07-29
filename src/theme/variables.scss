@@ -241,13 +241,19 @@
     margin-left: 16px;
     font-weight: 300;
   }
+}
+ion-item-divider{
+  --background: var(--ion-background-color);
+}
 
-  ion-item-divider{
-    --background: var(--ion-background-color);
-  }
+ion-item {
+  --background: none
+}
 
-  ion-item {
-    --background: none
-  }
+.d-flex {
+     display: flex;
+}
 
+.mt-10 {
+    margin-top: 10px;
 }

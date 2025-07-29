@@ -1,14 +1,8 @@
 <ion-header class="ion-no-border" mode="ios">
   <ion-toolbar>
     <ion-title class="ion-text-center" color="primary">ASR Works</ion-title>
-    <ion-button
-      slot="end"
-      size="small"
-      (click)="goToNext()"
-      color="primary"
-      [disabled]="!listSelectedProducts.length"
-      class="dark-text-toggle"
-    >
+    <ion-button slot="end" size="small" (click)="goToNext()" color="primary" [disabled]="!listSelectedProducts.length"
+      class="dark-text-toggle">
       Next
     </ion-button>
   </ion-toolbar>
@@ -17,69 +11,50 @@
 <ion-content class="ion-padding" mode="ios">
   <ion-row class="align-items-center">
     <ion-col size="11">
-      <ion-searchbar
-        show-clear-button="always"
-        placeholder="Search products..."
-        (ionInput)="onSearchChange($event)"
-        mode="ios"
-      >
+      <ion-searchbar show-clear-button="always" placeholder="Search products..." (ionInput)="onSearchChange($event)"
+        mode="ios">
       </ion-searchbar>
     </ion-col>
     <ion-col size="1" class="d-flex justify-content-center">
       <ion-button fill="clear" class="mt-10" (click)="presentViewOptions()">
-        <ion-icon
-          class="fs-25"
-          name="funnel-outline"
-          slot="icon-only"
-        ></ion-icon>
+        <ion-icon class="fs-25" name="funnel-outline" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-col>
   </ion-row>
 
-  @if(listOpen) { 
-    @for(category of uniqueCategories; track category) {
+  @if(listOpen) {
+  @for(category of uniqueCategories; track category) {
   <ion-item-divider>
     <label class="ion-text-capitalize"> {{ category }}</label>
   </ion-item-divider>
 
   <ion-list class="br-10" inset="true">
-    @for(product of getProductsByCategory(category); track product){
-    <ng-container>
-      <ion-item color="light">
-        <ion-label class="ion-text-capitalize">
-          {{ product.productName }}
-        </ion-label>
-        @if(product?.fileSize?.length){
-        <ion-select
-          slot="end"
-          interface="popover"
-          placeholder="Choose Size"
-          multiple="true"
-          [(ngModel)]="selectedsize[product.productName]"
-          (ionChange)="onSizeChange(product)"
-        >
-          @for(size of product.fileSize; track $index) {
-          <ion-select-option [value]="size"> {{ size }} </ion-select-option>
-          }
-        </ion-select>
+    @for(product of getProductsByCategory(category); track $index){
+    <ion-item color="light">
+      <ion-label class="ion-text-capitalize">
+        {{ product.productName }}
+      </ion-label>
+      @if(product?.fileSize?.length){
+      <ion-select slot="end" interface="popover" placeholder="Choose Size" multiple="true"
+        [(ngModel)]="selectedsize[product.productName]" (ionChange)="onSizeChange(product)">
+        @for(size of product.fileSize; track $index) {
+        <ion-select-option [value]="size"> {{ size }} </ion-select-option>
         }
-
-        <ion-checkbox
-          class="ion-margin-start"
-          [checked]="isChecked(product)"
-          (ionChange)="onChange($event, product)"
-          slot="end"
-          [disabled]="product?.fileSize?.length &&  (!selectedsize[product.productName] || selectedsize[product.productName].length === 0)"
-        >
-        </ion-checkbox>
-      </ion-item>
-    </ng-container>
+      </ion-select>
+      }
+      <ion-checkbox class="ion-margin-start" [checked]="isChecked(product)" (ionChange)="onChange($event, product)"
+        slot="end"
+        [disabled]="product?.fileSize?.length &&  (!selectedsize[product.productName] || selectedsize[product.productName].length === 0)">
+      </ion-checkbox>
+    </ion-item>
     }
   </ion-list>
-  } @if(!isLoading && filteredProducts.length === 0){
+  }@empty{
+  @if(!filteredProducts.length && !isLoading){
   <ion-item lines="none">
     <ion-label class="ion-text-center w-full">No products added yet</ion-label>
   </ion-item>
+  }
 
   } } @if(accordionOpen){
   <ion-accordion-group multiple="true">
@@ -91,24 +66,19 @@
       @for(product of getProductsByCategory(category); track product){
       <ng-container>
         <div class="p-10" slot="content">
-          <div
-            *ngIf="product?.fileSize?.length <= 3; else manyChips"
-            style="
+          <div *ngIf="product?.fileSize?.length <= 3; else manyChips" style="
               display: flex;
               align-items: center;
               justify-content: space-between;
               flex-wrap: wrap;
               gap: 8px;
-            "
-          >
-            <div
-              style="
+            ">
+            <div style="
                 display: flex;
                 align-items: center;
                 flex-wrap: wrap;
                 gap: 8px;
-              "
-            >
+              ">
               <span>{{ product.productName }}</span>
               @for(size of product.fileSize; track size){
               <ng-container>
@@ -117,28 +87,20 @@
               }
             </div>
 
-            <ion-checkbox
-              [checked]="isChecked(product)"
-              (ionChange)="onChange($event, product)"
-              [disabled]="product?.fileSize?.length && !product?.selectedSizes?.length"
-            ></ion-checkbox>
+            <ion-checkbox [checked]="isChecked(product)" (ionChange)="onChange($event, product)"
+              [disabled]="product?.fileSize?.length && !product?.selectedSizes?.length"></ion-checkbox>
           </div>
 
           <ng-template #manyChips>
-            <div
-              style="
+            <div style="
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-              "
-            >
+              ">
               <span>{{ product.productName }}</span>
 
-              <ion-checkbox
-                [checked]="isChecked(product)"
-                (ionChange)="onChange($event, product)"
-                [disabled]="product?.fileSize?.length && !product?.selectedSizes?.length"
-              ></ion-checkbox>
+              <ion-checkbox [checked]="isChecked(product)" (ionChange)="onChange($event, product)"
+                [disabled]="product?.fileSize?.length && !product?.selectedSizes?.length"></ion-checkbox>
             </div>
 
             <div class="mt-2 d-flex flex-wrap gap-2">

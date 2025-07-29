@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonInput, IonButton, IonGrid, IonRow, IonCol, IonLabel, IonSelectOption, IonSelect, IonItem, IonIcon, IonText, IonList, IonSearchbar, IonAccordionGroup, IonAccordion,LoadingController } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonInput, IonButton, IonGrid, IonRow, IonCol, IonLabel, IonSelectOption, IonSelect, IonItem, IonIcon, IonText, IonList, IonSearchbar, IonAccordionGroup, IonAccordion, LoadingController } from '@ionic/angular/standalone';
 import { where, orderBy } from 'firebase/firestore';
 import { DocMetaStatus } from 'src/core/enums';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -34,12 +34,10 @@ export class AddproductPage {
   allProducts: any = []
   filteredProducts: any = [];
   selectedProduct: any = null;
-  loading: HTMLIonLoadingElement | null = null;
 
-  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef,private loadingCtrl: LoadingController) { }
+  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef, private loadingCtrl: LoadingController) { }
 
   async ngOnInit() {
-    await this.presentLoading();
     combineLatest([
       this.firestoreService.colOnQuery$('categories', [where('_meta.status', '==', DocMetaStatus.Live), orderBy('_meta.createdAt', 'desc')]),
       this.firestoreService.colOnQuery$('products', [where('_meta.status', '==', DocMetaStatus.Live), orderBy('_meta.createdAt', 'desc')])
@@ -49,33 +47,13 @@ export class AddproductPage {
         this.categories = categories;
         this.allProducts = products;
         this.filteredProducts = [...this.allProducts];
-        this.dismissLoading(); 
       })
     ).subscribe();
 
 
     this.sizeForm.get('search')?.valueChanges.subscribe((term: any) => {
       this.filterSizes(term);
-    },
-    (err: Error) => {
-      console.error('Error loading products:', err);
-      this.dismissLoading();
-    });
-  }
-
-  async presentLoading() {
-    this.loading = await this.loadingCtrl.create({
-      message: 'Loading products...',
-      spinner: 'lines-sharp',
-    });
-    await this.loading.present();
-  }
-
-  async dismissLoading() {
-    if (this.loading) {
-      await this.loading.dismiss();
-      this.loading = null;
-    }
+    })
   }
 
 

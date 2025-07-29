@@ -47,15 +47,12 @@
 
             <ion-accordion-group class="ion-margin-bottom">
               <ion-accordion value="product-select">
-
-
                 <ion-item slot="header">
                   <ion-input formControlName="productName" placeholder="Search and select a product"></ion-input>
                 </ion-item>
 
                 <div slot="content">
                   <ion-searchbar formControlName="search" placeholder="Search product"></ion-searchbar>
-
                   <div style="max-height: 180px; overflow-y: auto;">
                     <ion-list>
                       <ion-item button *ngFor="let product of filteredProducts" (click)="selectProduct(product)">
@@ -71,7 +68,6 @@
             <ion-item>
               <ion-input formControlName="size" placeholder="Enter new size"></ion-input>
             </ion-item>
-
             <ion-button expand="block" type="submit" color="primary" shape="round" [disabled]="sizeForm.invalid"
               class="ion-margin-top">
               Save

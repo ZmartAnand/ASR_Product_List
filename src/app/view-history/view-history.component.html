@@ -9,8 +9,13 @@
   <ion-searchbar (ionInput)="searchTerm($event)" placeholder="Search products..."></ion-searchbar>
 
   <ion-item-divider>
-    <ion-label class="bold-label">{{history?.name}}</ion-label>
-    <ion-label class="bold-label" slot="end">Total: {{ history?.saveProducts?.length }}</ion-label>
+    <div class="ion-text-capitalize"> 
+      <ion-label >{{history?.name}}</ion-label>
+      <ion-label class="mt-10" >Total: {{ history?.saveProducts?.length }}</ion-label>
+    </div>
+    <div slot="end">
+      <ion-button  color="primary" size="small" (click)="updateProducts()"  >Add Products</ion-button>
+    </div>
   </ion-item-divider>
 
   <ion-list inset="true">

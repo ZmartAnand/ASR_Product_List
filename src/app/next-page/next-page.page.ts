@@ -6,6 +6,8 @@ import { FirebaseService } from 'src/services/firebase.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { LoadingController, ToastController } from '@ionic/angular';
 import { PdfService } from 'src/services/pdfService';
+import { LoadingService } from 'src/services/loading.service';
+import { Base } from 'src/core/base';
 
 @Component({
   selector: 'app-next-page',
@@ -14,7 +16,7 @@ import { PdfService } from 'src/services/pdfService';
   standalone: true,
   imports: [IonButtons, IonFooter, IonIcon, IonButton, RouterLink, IonList, IonItem, IonLabel, IonItemDivider, IonSearchbar, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule, IonBackButton]
 })
-export class NextPagePage implements OnInit {
+export class NextPagePage extends Base {
   products: any[] = [];
   filteredProducts: any = []
   quantity: number = 1;
@@ -26,8 +28,10 @@ export class NextPagePage implements OnInit {
     private loadingController: LoadingController,
     private toastController: ToastController,
     private alertController: AlertController,
-    private route: ActivatedRoute
-  ) {}
+    private loadingService: LoadingService
+  ) {
+    super()
+  }
 
   ngOnInit() {
     this.loadProducts();
@@ -74,16 +78,20 @@ export class NextPagePage implements OnInit {
   }
 
   async saveProducts(value: any) {
-    const loading = await this.loadingController.create({
-      message: 'Saving products and generating PDF...'
-    });
-    await loading.present();
-
+    await this.loadingService.show()
     try {
-      await this.firestoreService.add('history', {
-        name: value,
-        saveProducts: this.products
-      })
+      if (this.current?.history?._meta?.id) {
+        await this.firestoreService.update(`history/${this.current?.history?._meta?.id}`, {
+          name: value,
+          saveProducts: this.products
+        })
+        this.current.history = null
+      } else {
+        await this.firestoreService.add('history', {
+          name: value,
+          saveProducts: this.products
+        })
+      }
       await this.pdfService.exportToPDF(this.products, value);
       localStorage.removeItem('SelectedProducts');
       this.products = [];
@@ -91,100 +99,11 @@ export class NextPagePage implements OnInit {
       console.error('Error saving products:', error);
       await this.showToast('Error saving products or generating PDF', 'danger');
     } finally {
-      await loading.dismiss();
-      this.router.navigate(['/'], { state: { fromSave: true } });
+      this.loadingService.dismissAll();
       await this.showToast('Products saved and PDF generated successfully!', 'primary');
+      this.router.navigate(['/'], { state: { fromSave: true } });
     }
   }
-
-  // async generateSimplePDF() {
-  //   if (!this.products?.length) {
-  //     await this.showToast('No products to save', 'warning');
-  //     return;
-  //   }
-
-  //   try {
-  //     const printContent = `
-  //       <!DOCTYPE html>
-  //       <html>
-  //         <head>
-  //           <title>ASR-Works - Product List</title>
-  //           <style>
-  //             body { 
-  //               font-family: Arial, sans-serif; 
-  //               margin: 40px; 
-  //               line-height: 1.6;
-  //             }
-  //             .header { 
-  //               text-align: center; 
-  //               color: #333; 
-  //               margin-bottom: 10px;
-  //               font-size: 24px;
-  //               font-weight: bold;
-  //             }
-  //             .date { 
-  //               text-align: center; 
-  //               margin-bottom: 30px; 
-  //               color: #666; 
-  //               font-size: 14px;
-  //             }
-  //             .product { 
-  //               margin: 12px 0; 
-  //               padding: 10px; 
-  //               border-bottom: 1px solid #eee; 
-  //               font-size: 16px;
-  //             }
-  //             .product-number { 
-  //               font-weight: bold; 
-  //               color: #007bff; 
-  //               margin-right: 8px;
-  //             }
-  //             @media print {
-  //               body { margin: 20px; }
-  //               .no-print { display: none; }
-  //             }
-  //           </style>
-  //         </head>
-  //         <body>
-  //           <div class="header">ASR-Works - Product List</div>
-  //           <div class="date">Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</div>
-  //           <div class="products">
-  //             ${this.products.map((product: string, index: number) =>
-  //       `<div class="product">
-  //                 <span class="product-number">${index + 1}.</span>${product}
-  //               </div>`
-  //     ).join('')}
-  //           </div>
-  //           <div class="no-print" style="margin-top: 30px; text-align: center;">
-  //             <button onclick="window.print()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
-  //               Print / Save as PDF
-  //             </button>
-  //             <button onclick="window.close()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">
-  //               Close
-  //             </button>
-  //           </div>
-  //         </body>
-  //       </html>
-  //     `;
-
-  //     const newWindow = window.open('', '_blank');
-  //     if (newWindow) {
-  //       newWindow.document.write(printContent);
-  //       newWindow.document.close();
-
-  //       newWindow.focus();
-
-  //       setTimeout(() => {
-  //         newWindow.print();
-  //       }, 1000);
-  //     }
-
-  //     await this.showToast('Print window opened', 'success');
-  //   } catch (error) {
-  //     console.error('Error generating simple PDF:', error);
-  //     await this.showToast('Error opening print window', 'danger');
-  //   }
-  // }
 
   async showToast(message: string, color: string) {
     const toast = await this.toastController.create({
