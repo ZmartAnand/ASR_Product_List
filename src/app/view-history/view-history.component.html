@@ -1,33 +1,53 @@
 <ion-header class="ion-no-border" mode="ios">
   <ion-toolbar>
     <ion-back-button slot="start"></ion-back-button>
-    <ion-title class="ion-text-center" color="primary">ASR Works</ion-title>
+    <ion-title class="ion-text-center  ion-text-capitalize">{{ history?.name }}</ion-title>
+    <ion-button color="primary" slot="end" size="small" (click)="downloadPDF(history)"
+    >Download</ion-button
+  >
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding" mode="ios">
-  <ion-searchbar (ionInput)="searchTerm($event)" placeholder="Search products..."></ion-searchbar>
+  <ion-searchbar
+    (ionInput)="searchTerm($event)"
+    placeholder="Search products..."
+  ></ion-searchbar>
 
   <ion-item-divider>
-    <div class="ion-text-capitalize"> 
-      <ion-label >{{history?.name}}</ion-label>
-      <ion-label class="mt-10" >Total: {{ history?.saveProducts?.length }}</ion-label>
+    <div class="ion-text-capitalize">
+      <ion-label class="mt-10"
+        >Total: {{ history?.saveProducts?.length }}</ion-label
+      >
     </div>
     <div slot="end">
-      <ion-button  color="primary" size="small" (click)="updateProducts()"  >Add Products</ion-button>
+      <ion-button color="primary" size="small" (click)="updateProducts()"
+        >Add Products</ion-button
+      >
+
     </div>
   </ion-item-divider>
 
   <ion-list inset="true">
     @for(history of filteredHistory?.saveProducts; track $index){
     <ion-item>
-      <ion-label class="ion-text-capitalize">{{history.productName}}
+      <ion-label class="ion-text-capitalize"
+        >{{ history.productName }}
         @if(history?.size){
-        <span>{{history?.size}}</span>
+        <span>{{ history?.size }}</span>
         }
       </ion-label>
-      <p slot="end">Qty: <span>{{history?.quantity}}</span></p>
+      <p slot="end">
+        Qty: <span>{{ history?.quantity }}</span>
+      </p>
     </ion-item>
     }
+    @if (!isLoading && !filteredHistory?.saveProducts?.length) {
+      <ion-item>
+        <ion-label class="ion-text-center">
+          <h2>No Product available</h2>
+        </ion-label>
+      </ion-item>
+      }
   </ion-list>
 </ion-content>

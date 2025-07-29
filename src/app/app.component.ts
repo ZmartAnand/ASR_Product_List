@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { addOutline, bag, bookmark, cloudDownloadOutline, create,  createOutline,  eyeOutline, funnel, funnelOutline, list, pricetag, removeOutline, time, trashOutline } from 'ionicons/icons';
+import { addOutline, bag, bookmark, cloudDownloadOutline, create,  createOutline,  cube, eyeOutline, filterOutline, funnel, funnelOutline, list, pricetag, removeOutline, time, trashOutline } from 'ionicons/icons';
 import { StatusBar, Style } from '@capacitor/status-bar';
 
 @Component({
@@ -11,7 +11,7 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 })
 export class AppComponent {
   constructor(){
-    addIcons({funnel, funnelOutline,removeOutline, addOutline, trashOutline,list,pricetag,time,create,bag,eyeOutline,cloudDownloadOutline, createOutline, bookmark})
+    addIcons({funnel,filterOutline, cube,funnelOutline,removeOutline, addOutline, trashOutline,list,pricetag,time,create,bag,eyeOutline,cloudDownloadOutline, createOutline, bookmark})
     this.setupUI();
   }
 

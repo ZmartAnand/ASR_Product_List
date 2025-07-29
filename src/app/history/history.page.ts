@@ -8,7 +8,7 @@ import { DocMetaStatus } from 'src/core/enums';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { PdfService } from 'src/services/pdfService';
-import { LoadingController } from '@ionic/angular/standalone';
+import { LoadingController, AlertController } from '@ionic/angular/standalone';
 import { Router } from '@angular/router';
 import { LoadingService } from 'src/services/loading.service';
 
@@ -24,7 +24,7 @@ export class HistoryPage implements OnInit {
   filterHistories: any[] = [];
   isLoading = false;
 
-  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef, private pdfService: PdfService, private loadingService: LoadingService, private router: Router) { }
+  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef, private pdfService: PdfService, private loadingService: LoadingService, private router: Router, private alertController: AlertController,) { }
 
 
   async ngOnInit() {
@@ -40,10 +40,34 @@ export class HistoryPage implements OnInit {
       })
     ).subscribe();
   }
+  async alertDeleteProduct(history: any) {
+    const alert = await this.alertController.create({
+      header: 'Delete Confirmation',
+      message: `Are you sure you want to delete the history "${history?.name}"?`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
 
-  downloadPDF(history: any) {
-    this.pdfService.exportToPDF(history.saveProducts, history?.name || 'ASR-Works-Products');
+        },
+        {
+          text: 'Delete',
+          handler: () => {
+            this.confirmationDelete(history);
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
+  async confirmationDelete(history: any) {
+    await this.loadingService.show()
+    await this.firestoreService.delete(`history/${history?._meta?.id}`);
+    this.loadingService.dismissAll()
+
+  }
+
+
 
   searchTerm(event: any) {
     const query = event.target.value?.toLowerCase();

@@ -4,6 +4,7 @@ import { FirebaseService } from 'src/services/firebase.service';
 import { IonHeader, IonLabel, IonList, IonItem, IonContent, IonItemDivider, IonTitle, IonBackButton, IonToolbar, IonSearchbar, IonButton } from "@ionic/angular/standalone";
 import { Base } from 'src/core/base';
 import { LoadingService } from 'src/services/loading.service';
+import { PdfService } from 'src/services/pdfService';
 
 @Component({
   selector: 'app-view-history',
@@ -15,8 +16,9 @@ export class ViewHistoryComponent extends Base {
 
   history: any = []
   filteredHistory: any = []
-
-  constructor(private route: ActivatedRoute, private firestoreService: FirebaseService, private router:Router, private loadingService:LoadingService) { 
+  isLoading = false;
+  
+  constructor(private route: ActivatedRoute, private firestoreService: FirebaseService, private router:Router, private loadingService:LoadingService,private pdfService: PdfService) { 
     super()
   }
 
@@ -49,4 +51,7 @@ export class ViewHistoryComponent extends Base {
     this.router.navigate(['/'])
   }
 
+   downloadPDF(history: any) {
+    this.pdfService.exportToPDF(history.saveProducts, history?.name || 'ASR-Works-Products');
+  }
 }
