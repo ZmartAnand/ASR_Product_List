@@ -10,8 +10,10 @@ import {
 } from '@ionic/angular/standalone';
 
 import { where } from 'firebase/firestore';
+import { Base } from 'src/core/base';
 import { DocMetaStatus } from 'src/core/enums';
 import { FirebaseService } from 'src/services/firebase.service';
+import { LoadingService } from 'src/services/loading.service';
 import { ProductSelectionService } from 'src/services/product-selection.service';
 
 export interface SelectedProduct {
@@ -33,7 +35,7 @@ export interface SelectedProduct {
     IonSearchbar, IonHeader, IonToolbar, IonTitle, IonContent
   ]
 })
-export class ProductPage implements OnInit {
+export class ProductPage extends Base {
   allProducts: any[] = [];
   filteredProducts: any[] = [];
   uniqueCategories: string[] = [];
@@ -41,17 +43,16 @@ export class ProductPage implements OnInit {
   listOpen: boolean = true;
   listSelectedProducts: SelectedProduct[] = [];
   selectedsize: { [productName: string]: string[] } = {};
-  loading: HTMLIonLoadingElement | null = null;
   isLoading = true;
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute,
     private firestoreService: FirebaseService,
     private actionSheetCtrl: ActionSheetController,
     private productSelectionService: ProductSelectionService,
-    private loadingCtrl: LoadingController
+    private loadingService: LoadingService
   ) {
+    super()
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         const state = this.router.getCurrentNavigation()?.extras?.state;
@@ -74,38 +75,18 @@ export class ProductPage implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.isLoading = true;
-    this.presentLoading();
+  async ngOnInit() {
+    localStorage.removeItem('SelectedProducts');
+    await this.loadingService.show()
     this.firestoreService.colOnQuery$('products', [
       where('_meta.status', '==', DocMetaStatus.Live)
     ]).subscribe((products: any[]) => {
       this.allProducts = products;
       this.filteredProducts = [...this.allProducts];
       this.updateUniqueCategories();
+      this.loadingService.dismissAll()
       this.isLoading = false;
-      this.dismissLoading();
-    },
-      (error: any) => {
-        console.error('Error loading products:', error);
-        this.isLoading = false;
-        this.dismissLoading();
-      });
-    localStorage.removeItem('SelectedProducts');
-  }
-
-  async presentLoading() {
-    this.loading = await this.loadingCtrl.create({
-      message: 'Loading products...',
-      spinner: 'lines-sharp',
-    });
-    await this.loading.present();
-  }
-  async dismissLoading() {
-    if (this.loading) {
-      await this.loading.dismiss();
-      this.loading = null;
-    }
+    })
   }
 
   onSearchChange(event: any) {
@@ -124,7 +105,8 @@ export class ProductPage implements OnInit {
     this.uniqueCategories = Array.from(categorySet);
   }
 
-  getProductsByCategory(categoryId: string): any[] {
+  getProductsByCategory(categoryId: string): any[] | undefined {
+    if (!this.filteredProducts) return undefined;
     return this.filteredProducts.filter(p => p.category?.id === categoryId);
   }
 

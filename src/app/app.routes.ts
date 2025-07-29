@@ -20,7 +20,7 @@ export const routes: Routes = [
     loadComponent: () => import('./firestore/firestore.component').then(m => m.FirestoreComponent)
   },
   {
-    path: 'history-view/:id',
-    loadComponent: () => import('./history-view/history-view.component').then(m => m.HistoryViewComponent)
+    path: 'view-history/:id',
+    loadComponent: () => import('./view-history/view-history.component').then(m => m.ViewHistoryComponent)
   }
 ];

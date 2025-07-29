@@ -34,13 +34,11 @@ export class AddproductPage {
   allProducts: any = []
   filteredProducts: any = [];
   selectedProduct: any = null;
-  loading: HTMLIonLoadingElement | null = null;
   selectedSegment = 'category';
 
-  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef,private loadingCtrl: LoadingController) { }
+  constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef, private loadingCtrl: LoadingController) { }
 
   async ngOnInit() {
-    await this.presentLoading();
     combineLatest([
       this.firestoreService.colOnQuery$('categories', [where('_meta.status', '==', DocMetaStatus.Live), orderBy('_meta.createdAt', 'desc')]),
       this.firestoreService.colOnQuery$('products', [where('_meta.status', '==', DocMetaStatus.Live), orderBy('_meta.createdAt', 'desc')])
@@ -50,33 +48,13 @@ export class AddproductPage {
         this.categories = categories;
         this.allProducts = products;
         this.filteredProducts = [...this.allProducts];
-        this.dismissLoading(); 
       })
     ).subscribe();
 
 
     this.sizeForm.get('search')?.valueChanges.subscribe((term: any) => {
       this.filterSizes(term);
-    },
-    (err: Error) => {
-      console.error('Error loading products:', err);
-      this.dismissLoading();
-    });
-  }
-
-  async presentLoading() {
-    this.loading = await this.loadingCtrl.create({
-      message: 'Loading products...',
-      spinner: 'lines-sharp'
-    });
-    await this.loading.present();
-  }
-
-  async dismissLoading() {
-    if (this.loading) {
-      await this.loading.dismiss();
-      this.loading = null;
-    }
+    })
   }
 
 

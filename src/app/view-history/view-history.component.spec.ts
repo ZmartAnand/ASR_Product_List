@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { HistoryViewComponent } from './history-view.component';
+import { ViewHistoryComponent } from './view-history.component';
 
-describe('HistoryViewComponent', () => {
-  let component: HistoryViewComponent;
-  let fixture: ComponentFixture<HistoryViewComponent>;
+describe('ViewHistoryComponent', () => {
+  let component: ViewHistoryComponent;
+  let fixture: ComponentFixture<ViewHistoryComponent>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ HistoryViewComponent ],
+      declarations: [ ViewHistoryComponent ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(HistoryViewComponent);
+    fixture = TestBed.createComponent(ViewHistoryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

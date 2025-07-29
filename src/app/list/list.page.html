@@ -11,8 +11,8 @@
     <ion-label class="bold-label" slot="end">Total: {{filteredProducts.length}}</ion-label>
   </ion-item-divider>
 
-  <ion-list [inset]="true" >
-    @for (product of filteredProducts; track $index)  {
+  <ion-list [inset]="true">
+    @for (product of filteredProducts; track $index) {
     @if (product.fileSize?.length) {
     @for (size of product.fileSize; track $index) {
     <ion-item>
@@ -42,8 +42,8 @@
         <div class="product-title ion-text-capitalize">{{ product.productName }}</div>
       </ion-label>
       }
-      <ion-buttons slot="end">
 
+      <ion-buttons slot="end">
         <ion-button color="primary" (click)="toggleEdit(product, '')">
           <ion-icon name="create-outline" slot="start"></ion-icon>
         </ion-button>
@@ -52,17 +52,13 @@
           <ion-icon name="trash-outline"></ion-icon>
         </ion-button>
       </ion-buttons>
+
     </ion-item>
     }
-    }@if(!loading && filteredProducts.length === 0){
-      <ion-item>
-        <ion-label>No products available</ion-label>
-      </ion-item>
+    }@if( !filteredProducts.length && !isLoading){
+    <ion-item>
+      <ion-label class="ion-text-center">No products available</ion-label>
+    </ion-item>
     }
-     
-    
   </ion-list>
-
-
-
 </ion-content>
