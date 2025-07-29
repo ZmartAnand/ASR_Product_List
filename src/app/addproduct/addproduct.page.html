@@ -8,75 +8,92 @@
   <ion-grid class="h-100">
     <ion-row class="h-100 ion-justify-content-center">
       <ion-col size="12">
+        <ion-segment [(ngModel)]="selectedSegment" value="category" >
+          <ion-segment-button value="category">
+            <ion-label>Category</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="product">
+            <ion-label>Product</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="size">
+            <ion-label>Size</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+
         <ion-card class="ion-padding">
 
-          <form [formGroup]="categoryForm" (ngSubmit)="saveCategoryName()">
-            <ion-label color="dark">Category Name <ion-text color="danger">*</ion-text></ion-label>
-            <ion-item>
-              <ion-input formControlName="name" placeholder="Enter category name"></ion-input>
-            </ion-item>
-            <ion-button expand="block" type="submit" color="primary" shape="round" [disabled]="categoryForm.invalid"
-              class="ion-margin-top ">
-              Save
-            </ion-button>
-          </form>
+          <!-- Category Form -->
+          <ng-container *ngIf="selectedSegment === 'category'">
+            <form [formGroup]="categoryForm" (ngSubmit)="saveCategoryName()">
+              <ion-label color="dark">Category Name <ion-text color="danger">*</ion-text></ion-label>
+              <ion-item>
+                <ion-input formControlName="name" placeholder="Enter category name"></ion-input>
+              </ion-item>
+              <ion-button expand="block" type="submit" color="primary" shape="round" [disabled]="categoryForm.invalid"
+                class="ion-margin-top">
+                Save
+              </ion-button>
+            </form>
+          </ng-container>
 
-          <form [formGroup]="productForm" (ngSubmit)="saveProductName()" class="ion-margin-vertical">
-            <ion-label color="dark">Category Select <ion-text color="danger">*</ion-text></ion-label>
-            <ion-item>
-              <ion-select formControlName="categorySelect" placeholder="Select category type" interface="action-sheet">
-                <ion-select-option *ngFor="let category of categories" [value]="category">{{ category.name
-                  }}</ion-select-option>
-              </ion-select>
-            </ion-item>
+          <!-- Product Form -->
+          <ng-container *ngIf="selectedSegment === 'product'">
+            <form [formGroup]="productForm" (ngSubmit)="saveProductName()" class="ion-margin-vertical">
+              <ion-label color="dark">Category Select <ion-text color="danger">*</ion-text></ion-label>
+              <ion-item>
+                <ion-select formControlName="categorySelect" placeholder="Select category type" interface="action-sheet">
+                  <ion-select-option *ngFor="let category of categories" [value]="category">{{ category.name }}</ion-select-option>
+                </ion-select>
+              </ion-item>
 
-            <ion-item class="ion-margin-top">
-              <ion-input formControlName="productName" placeholder="Enter new product name"></ion-input>
-            </ion-item>
+              <ion-item class="ion-margin-top">
+                <ion-input formControlName="productName" placeholder="Enter new product name"></ion-input>
+              </ion-item>
 
-            <ion-button expand="block" type="submit" color="primary" shape="round" [disabled]="productForm.invalid"
-              class="ion-margin-top ">
-              Save
-            </ion-button>
-          </form>
+              <ion-button expand="block" type="submit" color="primary" shape="round" [disabled]="productForm.invalid"
+                class="ion-margin-top">
+                Save
+              </ion-button>
+            </form>
+          </ng-container>
 
-          <form [formGroup]="sizeForm" (ngSubmit)="saveSize()" class="ion-margin-top">
-            <ion-label color="dark" class="ion-margin-bottom">
-              Product <ion-text color="danger">*</ion-text>
-            </ion-label>
+          <!-- Size Form -->
+          <ng-container *ngIf="selectedSegment === 'size'">
+            <form [formGroup]="sizeForm" (ngSubmit)="saveSize()" class="ion-margin-top">
+              <ion-label color="dark" class="ion-margin-bottom">
+                Product <ion-text color="danger">*</ion-text>
+              </ion-label>
 
-            <ion-accordion-group class="ion-margin-bottom">
-              <ion-accordion value="product-select">
-
-
-                <ion-item slot="header">
-                  <ion-input formControlName="productName" placeholder="Search and select a product"></ion-input>
-                </ion-item>
-
-                <div slot="content">
-                  <ion-searchbar formControlName="search" placeholder="Search product"></ion-searchbar>
-
-                  <div style="max-height: 180px; overflow-y: auto;">
-                    <ion-list>
-                      <ion-item button *ngFor="let product of filteredProducts" (click)="selectProduct(product)">
-                        <ion-label>{{ product?.productName }}</ion-label>
-                      </ion-item>
-                    </ion-list>
+              <ion-accordion-group class="ion-margin-bottom">
+                <ion-accordion value="product-select">
+                  <ion-item slot="header">
+                    <ion-input formControlName="productName" placeholder="Search and select a product"></ion-input>
+                  </ion-item>
+                  <div slot="content">
+                    <ion-searchbar formControlName="search" placeholder="Search product"></ion-searchbar>
+                    <div style="max-height: 180px; overflow-y: auto;">
+                      <ion-list>
+                        <ion-item button *ngFor="let product of filteredProducts" (click)="selectProduct(product)">
+                          <ion-label>{{ product?.productName }}</ion-label>
+                        </ion-item>
+                      </ion-list>
+                    </div>
                   </div>
-                </div>
-              </ion-accordion>
-            </ion-accordion-group>
+                </ion-accordion>
+              </ion-accordion-group>
 
-            <ion-label class="ion-margin-top">Product Size <ion-text color="danger">*</ion-text></ion-label>
-            <ion-item>
-              <ion-input formControlName="size" placeholder="Enter new size"></ion-input>
-            </ion-item>
+              <ion-label class="ion-margin-top">Product Size <ion-text color="danger">*</ion-text></ion-label>
+              <ion-item>
+                <ion-input formControlName="size" placeholder="Enter new size"></ion-input>
+              </ion-item>
 
-            <ion-button expand="block" type="submit" color="primary" shape="round" [disabled]="sizeForm.invalid"
-              class="ion-margin-top">
-              Save
-            </ion-button>
-          </form>
+              <ion-button expand="block" type="submit" color="primary" shape="round" [disabled]="sizeForm.invalid"
+                class="ion-margin-top">
+                Save
+              </ion-button>
+            </form>
+          </ng-container>
+
         </ion-card>
       </ion-col>
     </ion-row>

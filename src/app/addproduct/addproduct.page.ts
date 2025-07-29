@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, DestroyRef } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonInput, IonButton, IonGrid, IonRow, IonCol, IonLabel, IonSelectOption, IonSelect, IonItem, IonIcon, IonText, IonList, IonSearchbar, IonAccordionGroup, IonAccordion,LoadingController } from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonCard, IonInput, IonButton, IonGrid, IonRow, IonCol, IonLabel, IonSelectOption, IonSelect, IonItem, IonText, IonList, IonSearchbar, IonAccordionGroup, IonAccordion,LoadingController, IonSegment, IonSegmentButton } from '@ionic/angular/standalone';
 import { where, orderBy } from 'firebase/firestore';
 import { DocMetaStatus } from 'src/core/enums';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,7 +12,7 @@ import { FirebaseService } from 'src/services/firebase.service';
   selector: 'app-addproduct',
   templateUrl: 'addproduct.page.html',
   styleUrls: ['addproduct.page.scss'],
-  imports: [IonAccordion, IonAccordionGroup, IonSearchbar, IonList, IonText, IonItem, IonLabel, IonCol, IonRow, IonGrid, IonButton, IonCard, IonContent, IonInput, CommonModule, FormsModule, IonToolbar, IonHeader, IonTitle, IonSelectOption, ReactiveFormsModule, IonSelect]
+  imports: [ IonSegment,IonSegmentButton, IonAccordion, IonAccordionGroup, IonSearchbar, IonList, IonText, IonItem, IonLabel, IonCol, IonRow, IonGrid, IonButton, IonCard, IonContent, IonInput, CommonModule, FormsModule, IonToolbar, IonHeader, IonTitle, IonSelectOption, ReactiveFormsModule, IonSelect]
 })
 export class AddproductPage {
   categoryForm = new FormGroup({
@@ -35,6 +35,7 @@ export class AddproductPage {
   filteredProducts: any = [];
   selectedProduct: any = null;
   loading: HTMLIonLoadingElement | null = null;
+  selectedSegment = 'category';
 
   constructor(private firestoreService: FirebaseService, private destroyRef: DestroyRef,private loadingCtrl: LoadingController) { }
 
@@ -66,7 +67,7 @@ export class AddproductPage {
   async presentLoading() {
     this.loading = await this.loadingCtrl.create({
       message: 'Loading products...',
-      spinner: 'lines-sharp',
+      spinner: 'lines-sharp'
     });
     await this.loading.present();
   }

@@ -11,6 +11,9 @@
 }
 
 ion-accordion,
-ion-list {
+ion-list,ion-input,ion-searchbar {
   --background: none
+}
+ion-segment {
+  --background: #35a8ba;
 }
