@@ -16,12 +16,12 @@ ion-label {
     border-radius: 10px;
 }
 
-ion-button {
-    min-width: 0%;
-}
+// ion-button {
+//     min-width: 0%;
+// }
 
-.fs-25 {
-    font-size: 25px;
+.fs-30 {
+    font-size: 30px;
 }
 
 
@@ -29,12 +29,12 @@ ion-select {
     max-width: 50%;
 }
 
-ion-button.dark-text-toggle::part(native) {
-    color: black;
-}
+// ion-button.dark-text-toggle::part(native) {
+//     color: black;
+// }
 
-@media (prefers-color-scheme: dark) {
-    ion-button.dark-text-toggle::part(native) {
-        color: white;
-    }
-}
+// @media (prefers-color-scheme: dark) {
+//     ion-button.dark-text-toggle::part(native) {
+//         color: white;
+//     }
+// }
