@@ -32,7 +32,7 @@ export class HistoryPage implements OnInit {
     this.isLoading = true;
     this.firestoreService.colOnQuery$('history', [where('_meta.status', '==', DocMetaStatus.Live), orderBy('_meta.createdAt', 'desc')]).pipe(
       takeUntilDestroyed(this.destroyRef),
-      map((histories: any) => {
+      map((histories: any) => {    
         this.histories = histories;
         this.filterHistories = this.histories;
         this.loadingService.dismissAll()

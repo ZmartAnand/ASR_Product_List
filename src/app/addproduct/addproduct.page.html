@@ -8,6 +8,7 @@
   <ion-grid class="h-100">
     <ion-row class="h-100 ion-justify-content-center">
       <ion-col size="12">
+        <!--segments-->
         <ion-segment [(ngModel)]="selectedSegment" color="primary" value="category" >
           <ion-segment-button value="category">
             <ion-label>Category</ion-label>
@@ -23,7 +24,7 @@
         <ion-card class="ion-padding">
 
           <!-- Category Form -->
-          <ng-container *ngIf="selectedSegment === 'category'">
+           @if(selectedSegment === 'category'){
             <form [formGroup]="categoryForm" (ngSubmit)="saveCategoryName()">
               <ion-label color="dark">Category Name <ion-text color="danger">*</ion-text></ion-label>
               <ion-item>
@@ -34,10 +35,10 @@
                 Save
               </ion-button>
             </form>
-          </ng-container>
+        }
 
           <!-- Product Form -->
-          <ng-container *ngIf="selectedSegment === 'product'">
+           @if(selectedSegment === 'product'){
             <form [formGroup]="productForm" (ngSubmit)="saveProductName()" class="ion-margin-vertical">
               <ion-label color="dark">Category Select <ion-text color="danger">*</ion-text></ion-label>
               <ion-item>
@@ -55,15 +56,16 @@
                 Save
               </ion-button>
             </form>
-          </ng-container>
+        }
 
           <!-- Size Form -->
-          <ng-container *ngIf="selectedSegment === 'size'">
+           @if(selectedSegment === 'size'){
             <form [formGroup]="sizeForm" (ngSubmit)="saveSize()" class="ion-margin-top">
               <ion-label color="dark" class="ion-margin-bottom">
                 Product <ion-text color="danger">*</ion-text>
               </ion-label>
 
+            <!--Accordion Section-->
             <ion-accordion-group class="ion-margin-bottom">
               <ion-accordion value="product-select">
                 <ion-item slot="header">
@@ -74,9 +76,11 @@
                   <ion-searchbar formControlName="search" placeholder="Search product"></ion-searchbar>
                   <div style="max-height: 180px; overflow-y: auto;">
                     <ion-list>
-                      <ion-item button *ngFor="let product of filteredProducts" (click)="selectProduct(product)">
+                      @for(product of filteredProducts; track $index){
+                      <ion-item button  (click)="selectProduct(product)">
                         <ion-label>{{ product?.productName }}</ion-label>
                       </ion-item>
+                    } 
                     </ion-list>
                   </div>
                   </div>
@@ -93,7 +97,7 @@
               Save
             </ion-button>
           </form>
-          </ng-container>
+        }
         </ion-card>
       </ion-col>
     </ion-row>

@@ -15,21 +15,26 @@ import { FirebaseService } from 'src/services/firebase.service';
   imports: [ IonSegment,IonSegmentButton, IonAccordion, IonAccordionGroup, IonSearchbar, IonList, IonText, IonItem, IonLabel, IonCol, IonRow, IonGrid, IonButton, IonCard, IonContent, IonInput, CommonModule, FormsModule, IonToolbar, IonHeader, IonTitle, IonSelectOption, ReactiveFormsModule, IonSelect]
 })
 export class AddproductPage {
+
+  //category 
   categoryForm = new FormGroup({
     name: new FormControl('', Validators.required)
   });
 
+  // product
   productForm = new FormGroup({
     productName: new FormControl('', Validators.required),
     categorySelect: new FormControl('', Validators.required)
   });
 
+  // size
   sizeForm = new FormGroup({
     productName: new FormControl('', Validators.required),
     size: new FormControl('', Validators.required),
     search: new FormControl('')
   });
 
+  //variables
   categories: any = []
   allProducts: any = []
   filteredProducts: any = [];
@@ -57,7 +62,7 @@ export class AddproductPage {
     })
   }
 
-
+  //Category Functions
   async saveCategoryName() {
     if (this.categoryForm.valid) {
       await this.firestoreService.set(`categories/${this.categoryForm?.value?.name}`, {
@@ -67,6 +72,7 @@ export class AddproductPage {
     }
   }
 
+  //Product Functions
   async saveProductName() {
     if (this.productForm.valid) {
       const data: any = this.productForm.value;
@@ -79,6 +85,7 @@ export class AddproductPage {
     }
   }
 
+  //Size Functions
   saveSize() {
     if (this.sizeForm.valid) {
       const data = this.sizeForm.value;
