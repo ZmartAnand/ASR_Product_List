@@ -98,11 +98,14 @@ export class ProductPage extends Base {
   }
 
   updateUniqueCategories() {
-    const categorySet = new Set<string>();
-    this.filteredProducts.forEach(p => {
-      if (p.category?.id) categorySet.add(p.category.id);
-    });
-    this.uniqueCategories = Array.from(categorySet);
+    const categorySet: any = []
+
+    this.filteredProducts.forEach((product: any) => {
+      if (product?.category?.id && !categorySet.includes(product?.category?.id)) {
+        categorySet.push(product?.category?.id)
+      }
+      this.uniqueCategories = categorySet;
+    })
   }
 
   getProductsByCategory(categoryId: string): any[] | undefined {
