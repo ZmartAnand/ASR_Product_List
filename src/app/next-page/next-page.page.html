@@ -1,9 +1,11 @@
+
 <ion-header class="ion-no-border" mode="ios">
   <ion-toolbar>
     <ion-back-button slot="start"></ion-back-button>
     <ion-title class="ion-text-center" color="primary">ASR Works</ion-title>
   </ion-toolbar>
 </ion-header>
+
 
 <ion-content class="ion-padding" mode="ios">
   <ion-searchbar (ionInput)="searchTerm($event)" placeholder="Search products..."></ion-searchbar>
@@ -23,6 +25,7 @@
         <span>{{product?.size}}</span>
         }
       </ion-label>
+
       <ion-buttons slot="end">
         <ion-button color="medium" (click)="decreaseQuantity(product)">
           <ion-icon name="remove-outline"></ion-icon>
@@ -37,6 +40,7 @@
       </ion-buttons>
     </ion-item>
     }
+    
     @empty {
     <ion-item lines="none">
       <ion-label class="ion-text-center">No products added yet</ion-label>

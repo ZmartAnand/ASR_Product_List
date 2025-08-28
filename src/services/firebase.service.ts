@@ -1,6 +1,6 @@
 import { Injectable, runInInjectionContext } from '@angular/core';
 import { Firestore, collectionData, getDoc, doc, setDoc, docData, DocumentReference, DocumentData, query, getDocs, arrayUnion, Timestamp } from '@angular/fire/firestore';
-import { addDoc, collection, deleteDoc, getCountFromServer, QueryConstraint, updateDoc } from 'firebase/firestore';
+import {  collection, deleteDoc, getCountFromServer, QueryConstraint, updateDoc } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { DocMetaStatus } from '../core/enums';
 
